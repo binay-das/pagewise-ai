@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useEdgeStore } from "@/lib/edgestore";
 import { useState } from "react";
+import { generateSummary } from "../actions/upload-actions";
 
 export default function NewDocument() {
   const [file, setFile] = useState<File | null>(null);
@@ -34,6 +35,7 @@ export default function NewDocument() {
     console.log(res);
 
     setMessage("Uploaded");
+    generateSummary(res.url);
   };
 
   return (
