@@ -30,4 +30,20 @@ model PdfSummary {
   updatedAt       DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  chunks DocumentChunk[]
+}
+
+
+
+model DocumentChunk {
+  id           String   @id @default(cuid())
+  content      String
+
+  embedding    Unsupported("vector(768)")?
+
+  pdfSummaryId String
+  pdfSummary   PdfSummary @relation(fields: [pdfSummaryId], references: [id], onDelete: Cascade)
+
+  @@index([pdfSummaryId])
 }
