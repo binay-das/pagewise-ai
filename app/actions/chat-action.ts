@@ -20,6 +20,7 @@ const embeddings = new GoogleGenerativeAIEmbeddings({
   modelName: "text-embedding-004",
 });
 
+
 export async function askQuestionAction(
   messages: CoreMessage[],
   documentId: string
@@ -29,20 +30,17 @@ export async function askQuestionAction(
 
   const vectorStore = new SupabaseVectorStore(embeddings, {
     client: supabaseClient,
-    tableName: "DocumentChunk", 
-    queryName: "match_documents", 
+    tableName: "DocumentChunk",
+    queryName: "match_documents",
   });
 
-  // similarity search, filtering by the specific document id
+
   const relevantDocs = await vectorStore.similaritySearch(question, 4, {
     pdfSummaryId: documentId,
   });
-  
-  //  AUGMENTATION 
-  // Combine the content of the relevant chunks into a single string.
+
   const context = relevantDocs.map((doc) => doc.pageContent).join("\n\n---\n\n");
 
-  //  GENERATION 
   const prompt = `You are a helpful AI assistant for the PageWise app. Your task is to answer the user's question based ONLY on the provided context from their uploaded document.
   
   If the answer is not found in the context, clearly state "I couldn't find an answer to that in the document." Do not use any external knowledge or make up information.
@@ -60,5 +58,5 @@ export async function askQuestionAction(
     prompt: prompt,
   });
 
-  return result.toUIMessageStreamResponse();
+  return result.toTextStreamResponse();
 }
