@@ -5,6 +5,8 @@ import { generateSummaryFromGemini } from "@/lib/gemini";
 import { fetchAndExtractText } from "@/lib/langchain";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
+import { processAndEmbedDocument } from "./embed-actions";
+
 
 export async function generateSummary(url: string) {
     if (!url) {
@@ -86,9 +88,13 @@ export async function storePdfSummaryAction({
             },
         });
 
+        await processAndEmbedDocument(savedPdfSummary.id);
+        
+        console.log(`Kicked off embedding for PdfSummary ID: ${savedPdfSummary.id}`);
+
         return {
             success: true,
-            message: "Summary saved successfully",
+            message: "Summary saved successfully and embedding process started",
             data: savedPdfSummary,
         };
     } catch (error) {
