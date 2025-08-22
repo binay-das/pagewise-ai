@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useEdgeStore } from "@/lib/edgestore";
 import { useState } from "react";
-import { generateSummary } from "../actions/upload-actions";
+import { generateSummary, storePdfSummaryAction } from "../actions/upload-actions";
 
 export default function NewDocument() {
   const [file, setFile] = useState<File | null>(null);
@@ -35,7 +35,19 @@ export default function NewDocument() {
     console.log(res);
 
     setMessage("Uploaded");
-    generateSummary(res.url);
+    const summaryRes = await generateSummary(res.url);
+    if (!summaryRes.success || !summaryRes.data?.summary) {
+      throw new Error("Failed to generate summary.");
+    }
+
+    // save summary and user data
+    const saved = await storePdfSummaryAction({
+      fileUrl: res.url,
+      summary: summaryRes.data.summary,
+      extractedText: summaryRes.data.pdfText,
+      title: file.name.replace(/\.pdf$/i, ""),
+      fileName: file.name,
+    });
   };
 
   return (

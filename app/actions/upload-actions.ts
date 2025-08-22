@@ -1,7 +1,10 @@
 "use server";
 
+import { authOptions } from "@/lib/auth";
 import { generateSummaryFromGemini } from "@/lib/gemini";
 import { fetchAndExtractText } from "@/lib/langchain";
+import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
 
 export async function generateSummary(url: string) {
     if (!url) {
@@ -44,6 +47,55 @@ export async function generateSummary(url: string) {
             success: false,
             message: "Failed to extract text from PDF",
             data: null,
+        };
+    }
+}
+
+
+export async function storePdfSummaryAction({
+    fileUrl,
+    summary,
+    title,
+    fileName,
+    extractedText
+}: {
+    fileUrl: string;
+    summary: string;
+    title: string;
+    fileName: string;
+    extractedText: string;
+}) {
+    try {
+        const session = await getServerSession(authOptions);
+        const user = session?.user;
+        if (!user || !user.id) {
+            return {
+                success: false,
+                message: "User not found",
+            };
+        }
+
+        const savedPdfSummary = await prisma.pdfSummary.create({
+            data: {
+                userId: user.id,
+                originalFileUrl: fileUrl,
+                summaryText: summary,
+                title,
+                fileName,
+                extractedText
+            },
+        });
+
+        return {
+            success: true,
+            message: "Summary saved successfully",
+            data: savedPdfSummary,
+        };
+    } catch (error) {
+        console.error("Error storing summary:", error);
+        return {
+            success: false,
+            message: "Failed to store summary in db",
         };
     }
 }
