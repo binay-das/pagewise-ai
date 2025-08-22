@@ -3,7 +3,7 @@ import { getDocumentById } from "@/lib/document";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
+import { ChatInterface } from "@/components/chat/chat-interface";
 export default async function DocumentPage({
   params: { id },
 }: {
@@ -20,42 +20,64 @@ export default async function DocumentPage({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-6">
-          <Link href="/documents">Back to Dashboard</Link>
-          <h1 className="text-3xl mt-2 font-bold">{document.title}</h1>
+    <div className="h-screen w-full flex flex-col bg-gray-50 dark:bg-gray-900">
+      <header className="p-4 border-b">
+        <div className="max-w-7xl mx-auto">
+          <Link href="/documents" className="text-blue-500 hover:underline">
+            &larr; Back to Dashboard
+          </Link>
+          <h1 className="text-2xl mt-1 font-bold truncate" title={document.title ?? ""}>
+            {document.title}
+          </h1>
         </div>
+      </header>
 
-        <Card className="grid grid-cols-2 gap-8 mb-12">
-          <Card className="h-">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Extracted Text</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <pre className="text-sm whitespace-pre-wrap font-mono bg-gray-50 dark:bg-gray-800 p-4 rounded-md max-h-[60vh] overflow-y-auto">
-                {document.extractedText}
-              </pre>
-            </CardContent>
-          </Card>
-          <Card className=""></Card>
-        </Card>
-
-        <Card className="grid grid-cols-2 gap-8 mb-12">
-          <Card className="h-screen">
+      <main className="flex-grow grid grid-cols-1 lg:grid-cols-2 grid-rows-2 gap-4 p-4 overflow-hidden">
+        <Card className="flex flex-col">
+          <CardHeader>
+            <CardTitle>Original Document</CardTitle>
+          </CardHeader>
+          <CardContent className="flex-grow">
             <iframe
               src={document.originalFileUrl}
-              className="w-full h-full"
+              className="w-full h-full border rounded-md"
               title={document.title ?? "PDF Document"}
             />
-          </Card>
-          <Card className="h-full">
-            <pre className="text-sm whitespace-pre-wrap font-mono bg-gray-50 dark:bg-gray-800 p-4 rounded-md max-h-[60vh] overflow-y-auto">
+          </CardContent>
+        </Card>
+
+        <Card className="flex flex-col">
+          <CardHeader>
+            <CardTitle>Chat with this Document</CardTitle>
+          </CardHeader>
+          <CardContent className="flex-grow p-0 overflow-auto">
+            <ChatInterface documentId={id} />
+          </CardContent>
+        </Card>
+
+        <Card className="flex flex-col overflow-hidden">
+          <CardHeader>
+            <CardTitle>AI Generated Summary</CardTitle>
+          </CardHeader>
+          <CardContent className="flex-grow overflow-y-auto">
+            <pre className="text-sm whitespace-pre-wrap font-sans">
               {document.summaryText}
             </pre>
-          </Card>
+          </CardContent>
         </Card>
-      </div>
+
+        {/* Bottom-Right: Extracted Text */}
+        <Card className="flex flex-col overflow-hidden">
+          <CardHeader>
+            <CardTitle>Extracted Text</CardTitle>
+          </CardHeader>
+          <CardContent className="flex-grow overflow-y-auto">
+            <pre className="text-xs whitespace-pre-wrap font-mono">
+              {document.extractedText}
+            </pre>
+          </CardContent>
+        </Card>
+      </main>
     </div>
   );
 }
