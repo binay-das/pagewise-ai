@@ -9,7 +9,6 @@ import {
   FileText
 } from "lucide-react";
 
-// Function to get current year
 function getCurrentYear(): number {
   return new Date().getFullYear();
 }
@@ -18,10 +17,8 @@ export function Footer() {
   return (
     <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Main Footer Content */}
         <div className="py-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-            {/* Company Info */}
             <div className="lg:col-span-2">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-500 via-purple-600 to-pink-600 rounded-xl flex items-center justify-center">
@@ -38,7 +35,6 @@ export function Footer() {
                 Experience the future of document interaction today.
               </p>
 
-              {/* Tagline */}
               <div className="flex items-center space-x-2 mb-8">
                 <FileText className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                 <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">
@@ -121,7 +117,6 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom Footer */}
         <div className="py-8 border-t border-gray-200 dark:border-gray-800">
           <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
             <p className="text-gray-500 dark:text-gray-400 text-sm">
