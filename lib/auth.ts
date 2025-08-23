@@ -22,23 +22,20 @@ export const authOptions: NextAuthOptions = {
                 });
 
                 if (!user || !user.password) {
-                    return null;
+                    throw new Error("No user found with this email");
                 }
 
-                const passwordsMatch = await bcrypt.compare(
-                    credentials.password,
-                    user.password
-                );
+                const isValid = await bcrypt.compare(credentials.password, user.password);
 
-                if (!passwordsMatch) {
-                    return null; 
+                if (!isValid) {
+                    throw new Error("Invalid password");
                 }
 
                 return {
                     id: user.id,
                     email: user.email,
                 };
-            },
+            }
         }),
     ],
 
@@ -65,6 +62,6 @@ export const authOptions: NextAuthOptions = {
     secret: process.env.NEXTAUTH_SECRET,
 
     pages: {
-        signIn: '/signin', 
+        signIn: '/signin',
     }
 };
