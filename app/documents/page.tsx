@@ -26,7 +26,7 @@ const Dashboard = async () => {
             Your Documents
           </h1>
           <Button asChild>
-            <Link href="/new-document">
+            <Link href="/documents/new">
               <PlusCircle className="mr-2 h-4 w-4" />
               New document
             </Link>
