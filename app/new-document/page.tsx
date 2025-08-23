@@ -48,6 +48,8 @@ export default function NewDocument() {
       title: file.name.replace(/\.pdf$/i, ""),
       fileName: file.name,
     });
+
+    console.log("Saved: ", saved);
   };
 
   return (

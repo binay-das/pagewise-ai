@@ -82,7 +82,7 @@ export default function SignInPage() {
           </CardFooter>
         </form>
         <div className="mb-4 text-center text-sm">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/signup" className="underline">
               Sign up
             </Link>

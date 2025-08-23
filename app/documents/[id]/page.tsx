@@ -4,15 +4,10 @@ import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChatInterface } from "@/components/chat/chat-interface";
-export default async function DocumentPage({
-  params: { id },
-}: {
-  params: {
-    id: string;
-  };
-}) {
+export default async function DocumentPage(props: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   const user = session?.user;
+  const { id } = await props.params;
 
   const document = await getDocumentById(id, user?.id as string);
   if (!document) {

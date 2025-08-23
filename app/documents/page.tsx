@@ -39,7 +39,7 @@ const Dashboard = async () => {
               No documents yet!
             </h3>
             <p className="mt-2 text-gray-500 dark:text-gray-400">
-              Click "New Summary" to upload a PDF and get started.
+              Click &quot;New Summary&quot; to upload a PDF and get started.
             </p>
           </div>
         ) : (

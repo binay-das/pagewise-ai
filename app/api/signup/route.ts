@@ -26,12 +26,16 @@ export async function POST(request: Request) {
     const user = await prisma.user.create({
       data: {
         email,
-        password: hashedPassword, 
+        password: hashedPassword
+      },
+      select: {
+        id: true,
+        email: true,
+        createdAt: true
       },
     });
-
-    const { password: _, ...userWithoutPassword } = user;
-    return NextResponse.json(userWithoutPassword);
+    
+    return NextResponse.json(user);
     
   } catch (error) {
     console.error("SIGNUP_ERROR", error);
