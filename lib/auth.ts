@@ -24,6 +24,8 @@ export const authOptions: NextAuthOptions = {
                 if (!user || !user.password) {
                     throw new Error("No user found with this email");
                 }
+                console.log("credentials", credentials);
+                console.log("db user", user);
 
                 const isValid = await bcrypt.compare(credentials.password, user.password);
 
