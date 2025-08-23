@@ -36,8 +36,7 @@ export default function SignInPage() {
     if (result?.error) {
       setError("Invalid email or password. Please try again.");
     } else if (result?.ok) {
-      // On success, redirect to the dashboard or a protected page
-      router.push("/dashboard");
+      router.push("/documents");
     }
   };
 

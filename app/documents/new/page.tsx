@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useEdgeStore } from "@/lib/edgestore";
 import { useState } from "react";
-import { generateSummary, storePdfSummaryAction } from "../actions/upload-actions";
+import { generateSummary, storePdfSummaryAction } from "@/app/actions/upload-actions";
 
 export default function NewDocument() {
   const [file, setFile] = useState<File | null>(null);
