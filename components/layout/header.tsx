@@ -3,14 +3,12 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useTheme } from "next-themes";
 import { Menu, X, SparklesIcon } from "lucide-react";
-import { ModeToggle } from "../theme-toggle";
+import { ModeToggle } from "@/components/theme-toggle";
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

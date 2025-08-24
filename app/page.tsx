@@ -13,23 +13,14 @@ import {
   Search,
   ArrowRight,
   Sparkles,
-  Clock,
   Users,
-  Target,
-  TrendingUp,
   CheckCircle,
   Star,
-  Download,
   Globe,
   Smartphone,
-  BarChart3,
-  Lightbulb,
   Cpu,
   Database,
-  Lock,
-  Award,
-  Play,
-  ChevronRight,
+  Lock
 } from "lucide-react";
 
 export default function HomePage() {
@@ -73,6 +64,7 @@ export default function HomePage() {
                 </span>
                 . Every answer is grounded in fact with
                 <span className="text-blue-600 dark:text-blue-400 font-semibold">
+                {" "}
                   Retrieval-Augmented Generation
                 </span>
                 .
