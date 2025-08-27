@@ -19,7 +19,7 @@ const Dashboard = async () => {
   const documents = await getDocuments(user.id as string);
 
   return (
-    <div className="bg-gray-50 p-8">
+    <div className="bg-gray-50 p-8 min-h-screen">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-800 ">
