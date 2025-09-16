@@ -2,7 +2,7 @@ import { authOptions } from "@/lib/auth";
 import { getDocumentById } from "@/lib/document";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChatInterface } from "@/components/chat/chat-interface";
 import { Badge } from "@/components/ui/badge";

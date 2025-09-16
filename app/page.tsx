@@ -20,8 +20,9 @@ import {
   Smartphone,
   Cpu,
   Database,
-  Lock
+  Lock,
 } from "lucide-react";
+import Link from "next/link";
 
 export default function HomePage() {
   return (
@@ -64,19 +65,21 @@ export default function HomePage() {
                 </span>
                 . Every answer is grounded in fact with
                 <span className="text-blue-600 dark:text-blue-400 font-semibold">
-                {" "}
+                  {" "}
                   Retrieval-Augmented Generation
                 </span>
                 .
               </p>
 
-              <Button
-                size="lg"
-                className="bg-gradient-to-r from-blue-600 to-purple-700 hover:from-blue-700 hover:to-purple-800 text-white font-semibold px-8 py-6 text-lg shadow-xl hover:shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 group rounded-full mb-12"
-              >
-                Get Started
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-              </Button>
+              <Link href={"/documents"}>
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-blue-600 to-purple-700 hover:from-blue-700 hover:to-purple-800 text-white font-semibold px-8 py-6 text-lg shadow-xl hover:shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 group rounded-full mb-12"
+                >
+                  Get Started
+                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+                </Button>
+              </Link>
 
               <div className="flex items-center space-x-8 text-sm text-gray-500 dark:text-gray-400">
                 <div className="flex items-center space-x-2">
@@ -479,13 +482,15 @@ export default function HomePage() {
             future of document interaction.
           </p>
 
-          <Button
-            size="lg"
-            className="bg-white text-purple-700 hover:bg-gray-100 font-semibold px-10 py-6 text-lg shadow-xl transition-all duration-300 group rounded-full"
-          >
-            Get Started Now
-            <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-          </Button>
+          <Link href={"/documents"}>
+            <Button
+              size="lg"
+              className="bg-white text-purple-700 hover:bg-gray-100 font-semibold px-10 py-6 text-lg shadow-xl transition-all duration-300 group rounded-full"
+            >
+              Get Started Now
+              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+            </Button>
+          </Link>
 
           <div className="mt-12 text-center text-white text-sm">
             Trusted by leading organizations
