@@ -7,13 +7,13 @@ import {
   CardTitle,
 } from "../ui/card";
 import Link from "next/link";
-import { 
-  FileText, 
-  Calendar, 
-  Clock, 
+import {
+  FileText,
+  Calendar,
+  Clock,
   ExternalLink,
   BookOpen,
-  Layers
+  Layers,
 } from "lucide-react";
 import { Badge } from "../ui/badge";
 
@@ -22,19 +22,33 @@ const truncateText = (text: string, length: number) => {
   return text.substring(0, length) + "...";
 };
 
-// REFACTORED: This function now returns theme-aware classes
 const getFileTypeFromTitle = (title: string) => {
-  const extension = title.split('.').pop()?.toLowerCase();
+  const extension = title.split(".").pop()?.toLowerCase();
   switch (extension) {
-    case 'pdf':
-      return { type: 'PDF', color: 'bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20' };
-    case 'doc':
-    case 'docx':
-      return { type: 'DOC', color: 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20' };
-    case 'txt':
-      return { type: 'TXT', color: 'bg-gray-500/10 text-gray-700 dark:text-gray-400 border-gray-500/20' };
+    case "pdf":
+      return {
+        type: "PDF",
+        color: "bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20",
+      };
+    case "doc":
+    case "docx":
+      return {
+        type: "DOC",
+        color:
+          "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20",
+      };
+    case "txt":
+      return {
+        type: "TXT",
+        color:
+          "bg-gray-500/10 text-gray-700 dark:text-gray-400 border-gray-500/20",
+      };
     default:
-      return { type: 'FILE', color: 'bg-slate-500/10 text-slate-700 dark:text-slate-400 border-slate-500/20' };
+      return {
+        type: "FILE",
+        color:
+          "bg-slate-500/10 text-slate-700 dark:text-slate-400 border-slate-500/20",
+      };
   }
 };
 
@@ -42,18 +56,22 @@ const getRelativeTime = (date: Date) => {
   const now = new Date();
   const diffTime = Math.abs(now.getTime() - date.getTime());
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  
-  if (diffDays === 1) return 'Yesterday';
+
+  if (diffDays === 1) return "Yesterday";
   if (diffDays <= 7) return `${diffDays} days ago`;
-  // ... rest of the function is fine
-  return new Intl.DateTimeFormat('en-US').format(date);
+  if (diffDays <= 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
+  if (diffDays <= 365) return `${Math.ceil(diffDays / 30)} months ago`;
+
+  return `${Math.ceil(diffDays / 365)} years ago`;
 };
 
 export default function DocumentCard({ document }: { document: any }) {
   const createdDate = new Date(document.createdAt);
-  const fileType = getFileTypeFromTitle(document.title || document.fileName || '');
-  const wordCount = document.extractedText?.split(' ').length || 0;
-  const readingTime = Math.ceil(wordCount / 200); 
+  const fileType = getFileTypeFromTitle(
+    document.title || document.fileName || ""
+  );
+  const wordCount = document.extractedText?.split(" ").length || 0;
+  const readingTime = Math.ceil(wordCount / 200);
 
   return (
     <Link href={`/documents/${document.id}`} className="block h-full group">
@@ -66,8 +84,8 @@ export default function DocumentCard({ document }: { document: any }) {
               </CardTitle>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
-              <Badge 
-                variant="outline" 
+              <Badge
+                variant="outline"
                 className={`text-xs font-medium ${fileType.color}`}
               >
                 {fileType.type}
@@ -81,21 +99,13 @@ export default function DocumentCard({ document }: { document: any }) {
 
         <CardContent className="flex-grow pb-4">
           <div className="space-y-4">
-            <div className="relative h-20"> {/* Set a fixed height for the preview */}
+            <div className="relative h-20">
+              {" "}
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-4">
-                {document.summaryText 
+                {document.summaryText
                   ? truncateText(document.summaryText, 150)
-                  : "No summary available for this document."
-                }
+                  : "No summary available for this document."}
               </p>
-              {document.summaryText && document.summaryText.length > 150 && (
-                <div className="absolute bottom-0 right-0 bg-gradient-to-l from-white/80 to-transparent dark:from-slate-900/80 pl-8 pr-2 py-1">
-                  <span className="text-xs text-blue-600 dark:text-blue-500 font-medium flex items-center gap-1">
-                    <BookOpen className="h-3 w-3" />
-                    Read more
-                  </span>
-                </div>
-              )}
             </div>
 
             {wordCount > 0 && (
@@ -119,7 +129,7 @@ export default function DocumentCard({ document }: { document: any }) {
               <Calendar className="h-4 w-4" />
               <span>{getRelativeTime(createdDate)}</span>
             </div>
-            
+
             <div className="flex items-center text-blue-600 dark:text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <span className="text-sm font-medium mr-1">Open</span>
               <ExternalLink className="h-4 w-4" />
