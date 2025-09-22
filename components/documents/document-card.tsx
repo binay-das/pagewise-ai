@@ -12,7 +12,6 @@ import {
   Calendar,
   Clock,
   ExternalLink,
-  BookOpen,
   Layers,
 } from "lucide-react";
 import { Badge } from "../ui/badge";
