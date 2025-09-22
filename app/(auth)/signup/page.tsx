@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
+import { signUpAction } from "@/app/actions/auth-action"; 
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,28 +18,32 @@ import { Label } from "@/components/ui/label";
 
 export default function SignUpPage() {
   const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setIsLoading(true);
     setError(null);
+    setSuccess(null);
 
-    const response = await fetch("/api/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (response.ok) {
-      router.push("/signin");
-    } else {
-      const data = await response.json();
-      setError(data.message || "Something went wrong. Please try again.");
+    const result = await signUpAction({ email, password });
+    
+    if (result.error) {
+      setError(result.error);
     }
+
+    if (result.success) {
+      setSuccess(result.success);
+      router.push("/signin");
+    }
+    
+    setIsLoading(false);
   };
 
   return (
@@ -62,6 +66,7 @@ export default function SignUpPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
               />
             </div>
             <div className="grid gap-2">
@@ -72,13 +77,15 @@ export default function SignUpPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
               />
             </div>
             {error && <p className="text-sm text-red-500">{error}</p>}
+            {success && <p className="text-sm text-green-500">{success}</p>}
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full">
-              Create Account
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Creating Account..." : "Create Account"}
             </Button>
           </CardFooter>
         </form>
