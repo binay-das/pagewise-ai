@@ -23,6 +23,7 @@ import {
   Lock,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function HomePage() {
   return (
@@ -97,52 +98,13 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="relative">
-              <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-2xl border border-gray-200 dark:border-gray-700">
-                <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 rounded-2xl p-6 aspect-video flex items-center justify-center">
-                  <div className="text-center space-y-4">
-                    <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl mx-auto flex items-center justify-center shadow-lg">
-                      <FileText className="w-10 h-10 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                        Interactive Demo
-                      </h3>
-                      <p className="text-gray-600 dark:text-gray-400 text-sm">
-                        See PageWise AI in action
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-6 grid grid-cols-3 gap-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                      3.2s
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
-                      Avg Response
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-                      99.1%
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
-                      Accuracy
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                      24/7
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
-                      Available
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Image
+              src="/image.png"
+              width={990}
+              height={800}
+              alt="Demo"
+              className="rounded"
+            />
           </div>
         </div>
       </section>
