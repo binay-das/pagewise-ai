@@ -20,7 +20,6 @@ const embeddings = new GoogleGenerativeAIEmbeddings({
   modelName: "text-embedding-004",
 });
 
-
 export async function askQuestionAction(
   messages: CoreMessage[],
   documentId: string
@@ -33,7 +32,6 @@ export async function askQuestionAction(
     tableName: "DocumentChunk",
     queryName: "match_documents",
   });
-
 
   const relevantDocs = await vectorStore.similaritySearch(question, 4, {
     pdfSummaryId: documentId,
@@ -54,8 +52,8 @@ export async function askQuestionAction(
   ${question}`;
 
   const result = await streamText({
-    model: google("models/gemini-1.5-flash-latest"),
-    prompt: prompt,
+    model: google("models/gemini-2.0-flash"),
+    prompt,
   });
 
   return result.toTextStreamResponse();
