@@ -32,7 +32,7 @@ export default async function DocumentPage(props: {
               Document Not Found
             </h1>
             <p className="text-sm text-gray-600 dark:text-slate-400 mb-4">
-              The document doesn't exist or you don't have access to it.
+              The document doesn&apos;t exist or you don&apos;t have access to it.
             </p>
             <Link
               href="/documents"
