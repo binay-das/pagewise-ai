@@ -87,17 +87,17 @@ export default function NewDocument() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardContent className="p-8">
           <div className="text-center mb-8">
             <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl mx-auto mb-4 flex items-center justify-center">
               <FileText className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-2">
               Upload PDF
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-gray-600 dark:text-slate-400">
               Transform your document into an AI chat partner
             </p>
           </div>
@@ -109,8 +109,8 @@ export default function NewDocument() {
                 className={`
                   block w-full p-8 border-2 border-dashed rounded-lg cursor-pointer transition-colors
                   ${file 
-                    ? "border-green-500 bg-green-50 dark:bg-green-900/20" 
-                    : "border-gray-300 dark:border-gray-600 hover:border-blue-400 bg-gray-50 dark:bg-gray-800"
+                    ? "border-green-500 bg-green-50 dark:bg-emerald-900/20" 
+                    : "border-gray-300 dark:border-slate-600 hover:border-blue-400 bg-gray-50 dark:bg-slate-900"
                   }
                   ${isLoading ? "pointer-events-none opacity-50" : ""}
                 `}
@@ -128,14 +128,14 @@ export default function NewDocument() {
                   {!file ? (
                     <>
                       <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                      <p className="text-gray-600 dark:text-gray-400">
+                      <p className="text-gray-600 dark:text-slate-400">
                         Click to select PDF file
                       </p>
                     </>
                   ) : (
                     <>
                       <FileText className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                      <p className="font-medium text-gray-900 dark:text-white">
+                      <p className="font-medium text-gray-900 dark:text-slate-100">
                         {file.name}
                       </p>
                       <p className="text-sm text-gray-500">
@@ -151,10 +151,10 @@ export default function NewDocument() {
               <div className={`
                 flex items-center space-x-2 p-3 rounded-lg
                 ${status === "success" 
-                  ? "bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200" 
+                  ? "bg-green-50 dark:bg-emerald-900/20 text-green-800 dark:text-emerald-200" 
                   : status === "error"
                   ? "bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200"
-                  : "bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200"
+                  : "bg-blue-50 dark:bg-cyan-900/20 text-blue-800 dark:text-cyan-200"
                 }
               `}>
                 {isLoading ? (
@@ -188,8 +188,8 @@ export default function NewDocument() {
           </form>
 
           {file && !isLoading && status === "idle" && (
-            <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-              <p className="text-sm text-blue-800 dark:text-blue-200">
+            <div className="mt-6 p-4 bg-blue-50 dark:bg-cyan-900/20 rounded-lg">
+              <p className="text-sm text-blue-800 dark:text-cyan-200">
                 <strong>Next:</strong> AI will analyze your PDF and create a searchable knowledge base for intelligent conversations.
               </p>
             </div>

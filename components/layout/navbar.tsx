@@ -30,7 +30,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-slate-200/60 bg-white/80 backdrop-blur-sm dark:border-slate-800/60 dark:bg-slate-950/80">
       <div className="container max-w-7xl mx-auto flex h-16 items-center justify-between px-6">
         <Link 
-          href="/dashboard" 
+          href="/documents" 
           className="text-2xl font-bold text-slate-900 transition-colors duration-200 hover:text-blue-600 dark:text-slate-50 dark:hover:text-blue-500"
         >
           PagewiseAI

@@ -27,20 +27,20 @@ import Image from "next/image";
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+    <div className="min-h-screen bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100">
       <Header />
 
       <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950/20 dark:via-purple-950/10 dark:to-pink-950/20"></div>
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/10 dark:bg-blue-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-400/10 dark:bg-purple-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-slate-900/50 dark:via-slate-800/30 dark:to-slate-900/50"></div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/10 dark:bg-cyan-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-400/10 dark:bg-violet-500/5 rounded-full blur-3xl"></div>
 
         <div className="relative max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <div className="inline-flex items-center space-x-2 bg-gray-100/80 dark:bg-gray-800/50 backdrop-blur-sm rounded-full px-4 py-2 mb-8 border border-gray-200/50 dark:border-gray-700/50">
-                <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-                <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+              <div className="inline-flex items-center space-x-2 bg-gray-100/80 dark:bg-slate-800/50 backdrop-blur-sm rounded-full px-4 py-2 mb-8 border border-gray-200/50 dark:border-slate-700/50">
+                <Sparkles className="w-4 h-4 text-purple-600 dark:text-violet-400" />
+                <span className="text-sm text-gray-700 dark:text-slate-300 font-medium">
                   Powered by Advanced RAG Technology
                 </span>
                 <Badge variant="secondary" className="text-xs">
@@ -53,19 +53,19 @@ export default function HomePage() {
                   Go Beyond
                 </span>
                 <br />
-                <span className="text-gray-900 dark:text-white">
+                <span className="text-gray-900 dark:text-slate-100">
                   just that Page.
                 </span>
               </h1>
 
-              <p className="text-md md:text-xl text-gray-600 dark:text-gray-300 mb-10 leading-relaxed">
+              <p className="text-md md:text-xl text-gray-600 dark:text-slate-300 mb-10 leading-relaxed">
                 Transform your dense PDFs into
-                <span className="text-purple-600 dark:text-purple-400 font-semibold">
+                <span className="text-purple-600 dark:text-violet-400 font-semibold">
                   {" "}
                   intelligent conversation partners
                 </span>
                 . Every answer is grounded in fact with
-                <span className="text-blue-600 dark:text-blue-400 font-semibold">
+                <span className="text-blue-600 dark:text-cyan-400 font-semibold">
                   {" "}
                   Retrieval-Augmented Generation
                 </span>
@@ -82,7 +82,7 @@ export default function HomePage() {
                 </Button>
               </Link>
 
-              <div className="flex items-center space-x-8 text-sm text-gray-500 dark:text-gray-400">
+              <div className="flex items-center space-x-8 text-sm text-gray-500 dark:text-slate-400">
                 <div className="flex items-center space-x-2">
                   <Users className="w-4 h-4" />
                   <span>100+ users</span>
@@ -109,38 +109,38 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800/50">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-slate-900/50">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+              <div className="text-4xl font-bold text-blue-600 dark:text-cyan-400 mb-2">
                 1000+
               </div>
-              <div className="text-gray-600 dark:text-gray-400 font-medium">
+              <div className="text-gray-600 dark:text-slate-400 font-medium">
                 Pages Analyzed
               </div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-green-600 dark:text-green-400 mb-2">
+              <div className="text-4xl font-bold text-green-600 dark:text-emerald-400 mb-2">
                 99.99%
               </div>
-              <div className="text-gray-600 dark:text-gray-400 font-medium">
+              <div className="text-gray-600 dark:text-slate-400 font-medium">
                 Accuracy Rate
               </div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-purple-600 dark:text-purple-400 mb-2">
+              <div className="text-4xl font-bold text-purple-600 dark:text-violet-400 mb-2">
                 2.1s
               </div>
-              <div className="text-gray-600 dark:text-gray-400 font-medium">
+              <div className="text-gray-600 dark:text-slate-400 font-medium">
                 Avg Response
               </div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-orange-600 dark:text-orange-400 mb-2">
+              <div className="text-4xl font-bold text-orange-600 dark:text-amber-400 mb-2">
                 150+
               </div>
-              <div className="text-gray-600 dark:text-gray-400 font-medium">
+              <div className="text-gray-600 dark:text-slate-400 font-medium">
                 Languages
               </div>
             </div>
@@ -158,9 +158,9 @@ export default function HomePage() {
               <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 From Static
               </span>
-              <span className="text-gray-900 dark:text-white"> to Dynamic</span>
+              <span className="text-gray-900 dark:text-slate-100"> to Dynamic</span>
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-slate-400 max-w-3xl mx-auto">
               Our advanced RAG pipeline transforms any PDF into an intelligent
               conversation partner in three simple steps.
             </p>
@@ -169,7 +169,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-12 relative">
             <div className="hidden md:block absolute top-24 left-1/3 right-1/3 h-0.5 bg-gradient-to-r from-green-500 via-purple-500 to-blue-500"></div>
 
-            <Card className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 hover:border-green-500 dark:hover:border-green-400 hover:shadow-2xl transition-all duration-300 group relative">
+            <Card className="bg-white dark:bg-slate-900 border-2 border-gray-200 dark:border-slate-700 hover:border-green-500 dark:hover:border-emerald-400 hover:shadow-2xl transition-all duration-300 group relative">
               <CardContent className="p-8 text-center">
                 <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-3xl mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
                   <Upload className="w-10 h-10 text-white" />
@@ -177,22 +177,22 @@ export default function HomePage() {
                 <div className="absolute -top-3 left-4 bg-green-500 text-white text-sm font-bold px-3 py-1 rounded-full">
                   1
                 </div>
-                <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+                <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-slate-100">
                   Secure Upload
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p className="text-gray-600 dark:text-slate-400 leading-relaxed">
                   Drag, drop or select any PDF document. Enterprise-grade
                   encryption ensures your data stays private and secure
                   throughout the entire process.
                 </p>
-                <div className="mt-6 flex items-center justify-center space-x-2 text-sm text-green-600 dark:text-green-400">
+                <div className="mt-6 flex items-center justify-center space-x-2 text-sm text-green-600 dark:text-emerald-400">
                   <Lock className="w-4 h-4" />
                   <span>End-to-end encrypted</span>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-400 hover:shadow-2xl transition-all duration-300 group relative">
+            <Card className="bg-white dark:bg-slate-900 border-2 border-gray-200 dark:border-slate-700 hover:border-purple-500 dark:hover:border-violet-400 hover:shadow-2xl transition-all duration-300 group relative">
               <CardContent className="p-8 text-center">
                 <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-600 rounded-3xl mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
                   <Brain className="w-10 h-10 text-white" />
@@ -200,26 +200,26 @@ export default function HomePage() {
                 <div className="absolute -top-3 left-4 bg-purple-500 text-white text-sm font-bold px-3 py-1 rounded-full">
                   2
                 </div>
-                <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+                <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-slate-100">
                   AI Analysis
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p className="text-gray-600 dark:text-slate-400 leading-relaxed">
                   Our advanced{" "}
-                  <span className="text-purple-600 dark:text-purple-400 font-semibold">
+                  <span className="text-purple-600 dark:text-violet-400 font-semibold">
                     RAG system
                   </span>{" "}
                   creates a comprehensive vector index, making every sentence,
                   table, and diagram instantly searchable and contextually
                   aware.
                 </p>
-                <div className="mt-6 flex items-center justify-center space-x-2 text-sm text-purple-600 dark:text-purple-400">
+                <div className="mt-6 flex items-center justify-center space-x-2 text-sm text-purple-600 dark:text-violet-400">
                   <Cpu className="w-4 h-4" />
                   <span>Advanced ML models</span>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-2xl transition-all duration-300 group relative">
+            <Card className="bg-white dark:bg-slate-900 border-2 border-gray-200 dark:border-slate-700 hover:border-blue-500 dark:hover:border-cyan-400 hover:shadow-2xl transition-all duration-300 group relative">
               <CardContent className="p-8 text-center">
                 <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-3xl mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
                   <MessageCircle className="w-10 h-10 text-white" />
@@ -227,15 +227,15 @@ export default function HomePage() {
                 <div className="absolute -top-3 left-4 bg-blue-500 text-white text-sm font-bold px-3 py-1 rounded-full">
                   3
                 </div>
-                <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+                <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-slate-100">
                   Intelligent Chat
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p className="text-gray-600 dark:text-slate-400 leading-relaxed">
                   Ask questions naturally and receive precise, citation-backed
                   answers in seconds. Every response includes source references
                   for complete transparency.
                 </p>
-                <div className="mt-6 flex items-center justify-center space-x-2 text-sm text-blue-600 dark:text-blue-400">
+                <div className="mt-6 flex items-center justify-center space-x-2 text-sm text-blue-600 dark:text-cyan-400">
                   <MessageCircle className="w-4 h-4" />
                   <span>Natural conversation</span>
                 </div>
@@ -247,7 +247,7 @@ export default function HomePage() {
 
       <section
         id="features"
-        className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800/30"
+        className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-slate-900/30"
       >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -255,7 +255,7 @@ export default function HomePage() {
               Features
             </Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              <span className="text-gray-900 dark:text-white">Unlock the </span>
+              <span className="text-gray-900 dark:text-slate-100">Unlock the </span>
               <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                 Knowledge Within
               </span>
@@ -315,7 +315,7 @@ export default function HomePage() {
             ].map((feature, index) => (
               <Card
                 key={index}
-                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 group"
+                className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 hover:shadow-2xl transition-all duration-300 group"
               >
                 <CardContent className="p-8">
                   <div
@@ -326,7 +326,7 @@ export default function HomePage() {
                   <h3 className={`text-xl font-bold mb-4 ${feature.textColor}`}>
                     {feature.title}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                  <p className="text-gray-600 dark:text-slate-400 leading-relaxed">
                     {feature.description}
                   </p>
                 </CardContent>
@@ -344,7 +344,7 @@ export default function HomePage() {
               Use Cases
             </Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              <span className="text-gray-900 dark:text-white">Built for </span>
+              <span className="text-gray-900 dark:text-slate-100">Built for </span>
               <span className="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
                 Every Professional
               </span>
@@ -400,21 +400,21 @@ export default function HomePage() {
             ].map((useCase, index) => (
               <Card
                 key={index}
-                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group"
+                className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 hover:shadow-xl transition-all duration-300 group"
               >
                 <CardContent className="p-8 text-center">
                   <div className="text-4xl mb-4">{useCase.icon}</div>
-                  <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+                  <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-slate-100">
                     {useCase.title}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-6">
+                  <p className="text-gray-600 dark:text-slate-400 mb-6">
                     {useCase.description}
                   </p>
                   <ul className="space-y-2">
                     {useCase.benefits.map((benefit, idx) => (
                       <li
                         key={idx}
-                        className="flex items-center justify-center space-x-2 text-sm text-gray-500 dark:text-gray-400"
+                        className="flex items-center justify-center space-x-2 text-sm text-gray-500 dark:text-slate-400"
                       >
                         <CheckCircle className="w-4 h-4 text-green-500" />
                         <span>{benefit}</span>
