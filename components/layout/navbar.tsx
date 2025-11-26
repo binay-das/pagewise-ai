@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { LogOut, User } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
+import { LogOut, Sparkles } from "lucide-react"
 import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
 import { ModeToggle } from "../theme-toggle"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export function Navbar() {
   const [mounted, setMounted] = useState(false)
@@ -27,33 +28,52 @@ export function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200/60 bg-white/80 backdrop-blur-sm dark:border-slate-800/60 dark:bg-slate-950/80">
-      <div className="container max-w-7xl mx-auto flex h-16 items-center justify-between px-6">
+    <header className="sticky top-0 z-50 w-full border-b border-neutral-200 dark:border-neutral-800 bg-white/80 backdrop-blur-md dark:bg-neutral-950/80">
+      <div className="max-w-7xl mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link 
           href="/documents" 
-          className="text-2xl font-bold text-slate-900 transition-colors duration-200 hover:text-blue-600 dark:text-slate-50 dark:hover:text-blue-500"
+          className="flex items-center space-x-3 group"
         >
-          PagewiseAI
+          <div className="w-8 h-8 bg-neutral-900 dark:bg-white rounded-lg flex items-center justify-center transition-transform group-hover:scale-105">
+            <Sparkles className="w-4 h-4 text-white dark:text-neutral-900" />
+          </div>
+          <span className="text-lg font-bold text-neutral-900 dark:text-white tracking-tight">
+            PageWise
+          </span>
         </Link>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <ModeToggle />
 
           {session?.user && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="w-9 h-9">
-                  <User className="h-4 w-4" />
-                  <span className="sr-only">User menu</span>
+                <Button variant="ghost" className="relative h-9 w-9 rounded-full border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-900">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={session.user.image || ""} alt={session.user.name || ""} />
+                    <AvatarFallback className="bg-neutral-100 dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400">
+                      {session.user.name?.[0] || "U"}
+                    </AvatarFallback>
+                  </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <div className="px-2 py-1.5 text-sm text-slate-600 border-b dark:text-slate-400 dark:border-slate-800">
-                  {session.user.email}
+              <DropdownMenuContent align="end" className="w-56 p-2 border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">
+                <div className="flex items-center justify-start gap-2 p-2">
+                  <div className="flex flex-col space-y-0.5 leading-none">
+                    {session.user.name && (
+                      <p className="font-medium text-sm text-neutral-900 dark:text-white">
+                        {session.user.name}
+                      </p>
+                    )}
+                    <p className="w-[200px] truncate text-xs text-neutral-500 dark:text-neutral-400">
+                      {session.user.email}
+                    </p>
+                  </div>
                 </div>
+                <DropdownMenuSeparator className="bg-neutral-100 dark:bg-neutral-800" />
                 <DropdownMenuItem 
                   onClick={handleLogout}
-                  className="text-red-600 cursor-pointer focus:text-red-600 dark:text-red-500 dark:focus:text-red-500"
+                  className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 focus:bg-red-50 dark:focus:bg-red-900/10 cursor-pointer"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>

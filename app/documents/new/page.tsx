@@ -87,17 +87,17 @@ export default function NewDocument() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen bg-white dark:bg-neutral-950 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md border-neutral-200 dark:border-neutral-800 shadow-sm">
         <CardContent className="p-8">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl mx-auto mb-4 flex items-center justify-center">
-              <FileText className="w-8 h-8 text-white" />
+            <div className="w-12 h-12 bg-neutral-100 dark:bg-neutral-900 rounded-xl mx-auto mb-4 flex items-center justify-center">
+              <FileText className="w-6 h-6 text-neutral-900 dark:text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-2">
+            <h1 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">
               Upload PDF
             </h1>
-            <p className="text-gray-600 dark:text-slate-400">
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">
               Transform your document into an AI chat partner
             </p>
           </div>
@@ -107,10 +107,10 @@ export default function NewDocument() {
               <label 
                 htmlFor="file-upload" 
                 className={`
-                  block w-full p-8 border-2 border-dashed rounded-lg cursor-pointer transition-colors
+                  block w-full p-8 border border-dashed rounded-lg cursor-pointer transition-all duration-200
                   ${file 
-                    ? "border-green-500 bg-green-50 dark:bg-emerald-900/20" 
-                    : "border-gray-300 dark:border-slate-600 hover:border-blue-400 bg-gray-50 dark:bg-slate-900"
+                    ? "border-neutral-900 bg-neutral-50 dark:bg-neutral-900 dark:border-neutral-100" 
+                    : "border-neutral-300 dark:border-neutral-700 hover:border-neutral-400 dark:hover:border-neutral-600 hover:bg-neutral-50 dark:hover:bg-neutral-900"
                   }
                   ${isLoading ? "pointer-events-none opacity-50" : ""}
                 `}
@@ -127,18 +127,18 @@ export default function NewDocument() {
                 <div className="text-center">
                   {!file ? (
                     <>
-                      <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                      <p className="text-gray-600 dark:text-slate-400">
+                      <Upload className="w-6 h-6 text-neutral-400 mx-auto mb-3" />
+                      <p className="text-sm text-neutral-600 dark:text-neutral-400 font-medium">
                         Click to select PDF file
                       </p>
                     </>
                   ) : (
                     <>
-                      <FileText className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                      <p className="font-medium text-gray-900 dark:text-slate-100">
+                      <FileText className="w-6 h-6 text-neutral-900 dark:text-white mx-auto mb-3" />
+                      <p className="font-medium text-sm text-neutral-900 dark:text-white truncate px-4">
                         {file.name}
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-xs text-neutral-500 mt-1">
                         {(file.size / 1024 / 1024).toFixed(2)} MB
                       </p>
                     </>
@@ -149,12 +149,12 @@ export default function NewDocument() {
 
             {message && (
               <div className={`
-                flex items-center space-x-2 p-3 rounded-lg
+                flex items-center space-x-2 p-3 rounded-md text-sm
                 ${status === "success" 
-                  ? "bg-green-50 dark:bg-emerald-900/20 text-green-800 dark:text-emerald-200" 
+                  ? "bg-neutral-100 dark:bg-neutral-900 text-neutral-900 dark:text-white" 
                   : status === "error"
-                  ? "bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200"
-                  : "bg-blue-50 dark:bg-cyan-900/20 text-blue-800 dark:text-cyan-200"
+                  ? "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
+                  : "bg-neutral-50 dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400"
                 }
               `}>
                 {isLoading ? (
@@ -164,13 +164,13 @@ export default function NewDocument() {
                 ) : status === "error" ? (
                   <AlertCircle className="w-4 h-4" />
                 ) : null}
-                <span className="text-sm font-medium">{message}</span>
+                <span className="font-medium">{message}</span>
               </div>
             )}
 
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              className="w-full bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200 transition-all duration-200"
               disabled={!file || isLoading}
             >
               {isLoading ? (
@@ -188,9 +188,9 @@ export default function NewDocument() {
           </form>
 
           {file && !isLoading && status === "idle" && (
-            <div className="mt-6 p-4 bg-blue-50 dark:bg-cyan-900/20 rounded-lg">
-              <p className="text-sm text-blue-800 dark:text-cyan-200">
-                <strong>Next:</strong> AI will analyze your PDF and create a searchable knowledge base for intelligent conversations.
+            <div className="mt-6 p-4 bg-neutral-50 dark:bg-neutral-900 rounded-lg border border-neutral-100 dark:border-neutral-800">
+              <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed text-center">
+                AI will analyze your PDF and create a searchable knowledge base.
               </p>
             </div>
           )}

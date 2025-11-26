@@ -18,33 +18,30 @@ const Dashboard = async () => {
   const documents = await getDocuments(user.id as string);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      <div className="border-b border-slate-200/60 bg-white/80 backdrop-blur-sm sticky top-0 z-10 dark:border-slate-800/60 dark:bg-slate-950/80">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="space-y-1">
-              <h1 className="text-3xl font-bold text-slate-900 tracking-tight dark:text-slate-50">
-                Your Documents
+    <div className="min-h-screen bg-white dark:bg-neutral-950 font-sans">
+      <div className="sticky top-0 z-10 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-neutral-900 dark:text-white tracking-tight">
+                Documents
               </h1>
-              <p className="text-slate-600 text-sm dark:text-slate-400">
-                Manage and organize your document collection
-              </p>
             </div>
             
-            <div className="flex items-center gap-3">
-              <div className="hidden sm:flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                <FileText className="h-4 w-4" />
-                <span>{documents.length} documents</span>
+            <div className="flex items-center gap-4">
+              <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-neutral-500 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-900 px-3 py-1.5 rounded-full">
+                <FileText className="h-3.5 w-3.5" />
+                <span>{documents.length} files</span>
               </div>
               
               <Button 
                 asChild 
-                className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+                size="sm"
+                className="bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200 shadow-sm transition-all duration-200 rounded-full px-4"
               >
                 <Link href="/documents/new" className="flex items-center gap-2">
                   <PlusCircle className="h-4 w-4" />
-                  <span className="hidden sm:inline">New Document</span>
-                  <span className="sm:hidden">New</span>
+                  <span>New Document</span>
                 </Link>
               </Button>
             </div>
@@ -54,64 +51,41 @@ const Dashboard = async () => {
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         {documents.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 px-6">
-            <div className="relative">
-              <div className="w-32 h-32 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 shadow-lg">
-                <FileText className="h-16 w-16 text-slate-400 dark:text-slate-500" />
-              </div>
-              <div className="absolute -top-2 -right-2 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center shadow-lg animate-pulse">
-                <PlusCircle className="h-4 w-4 text-white" />
-              </div>
+          <div className="flex flex-col items-center justify-center py-24 px-6">
+            <div className="w-16 h-16 bg-neutral-50 dark:bg-neutral-900 rounded-2xl flex items-center justify-center mb-6 border border-neutral-100 dark:border-neutral-800">
+              <FileText className="h-8 w-8 text-neutral-400 dark:text-neutral-600" />
             </div>
             
-            <div className="text-center max-w-md">
-              <h3 className="text-2xl font-semibold text-slate-800 dark:text-slate-200 mb-3">
-                No documents yet!
+            <div className="text-center max-w-sm">
+              <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-2">
+                No documents yet
               </h3>
-              <p className="text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
-                Get started by uploading your first document. Create summaries, organize your files, and boost your productivity.
+              <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-8 leading-relaxed">
+                Upload your first document to get started.
               </p>
               
               <Button 
                 asChild 
-                size="lg"
-                className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+                className="bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200 rounded-full px-6"
               >
                 <Link href="/documents/new" className="flex items-center gap-2">
-                  <PlusCircle className="h-5 w-5" />
-                  Upload Your First Document
+                  <PlusCircle className="h-4 w-4" />
+                  Upload Document
                 </Link>
               </Button>
             </div>
           </div>
         ) : (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-
-              <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm dark:bg-slate-900 dark:border-slate-800">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center">
-                    <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">Total Documents</p>
-                    <p className="text-2xl font-bold text-slate-900 dark:text-slate-50">{documents.length}</p>
-                  </div>
-                </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {documents.map((d: any, index: number) => (
+              <div 
+                key={d.id} 
+                className="animate-fadeIn"
+                style={{ animationDelay: `${index * 30}ms` }}
+              >
+                <DocumentCard document={d} />
               </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {documents.map((d: any, index: number) => (
-                <div 
-                  key={d.id} 
-                  className="transform transition-all duration-200 hover:scale-105 animate-fadeIn"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <DocumentCard document={d} />
-                </div>
-              ))}
-            </div>
+            ))}
           </div>
         )}
       </div>
