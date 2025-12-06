@@ -5,7 +5,7 @@ const google = createGoogleGenerativeAI({
     apiKey: process.env.GEMINI_API_KEY,
 });
 
-const model = google('models/gemini-1.5-flash');
+const model = google('models/gemini-2.0-flash');
 
 export const generateSummaryFromGemini = async (pdfText: string) => {
     try {

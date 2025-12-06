@@ -37,7 +37,7 @@ export default async function HomePage() {
             <div>
               <div className="inline-flex items-center space-x-2 bg-neutral-100 dark:bg-neutral-900 rounded-full px-3 py-1 mb-8 border border-neutral-200 dark:border-neutral-800">
                 <span className="text-xs text-neutral-600 dark:text-neutral-400 font-medium px-2">
-                  Try it out
+                  Powered by Advanced RAG Technology
                 </span>
               </div>
 

@@ -47,9 +47,12 @@ export default function NewDocument() {
     setIsLoading(true);
     setStatus("idle");
 
+    let uploadedUrl: string | null = null;
+
     try {
       setMessage("Uploading...");
       const res = await edgestore.publicFiles.upload({ file });
+      uploadedUrl = res.url;
 
       setMessage("Processing with AI...");
       const summaryRes = await generateSummary(res.url);
@@ -80,6 +83,16 @@ export default function NewDocument() {
 
     } catch (error) {
       console.error("Upload error:", error);
+      
+      if (uploadedUrl) {
+        try {
+          await edgestore.publicFiles.delete({ url: uploadedUrl });
+          console.log("File deleted from EdgeStore due to failure");
+        } catch (deleteError) {
+          console.error("Failed to delete file from EdgeStore:", deleteError);
+        }
+      }
+
       setStatus("error");
       setMessage(error instanceof Error ? error.message : "Upload failed");
       setIsLoading(false);
