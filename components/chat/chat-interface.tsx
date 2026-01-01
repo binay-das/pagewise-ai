@@ -77,7 +77,7 @@ export const ChatInterface = ({ documentId }: { documentId: string }) => {
         {
           id: Date.now().toString() + "-error",
           role: "assistant",
-          content: "⚠️ Something went wrong. Try again!",
+          content: "Something went wrong. Try again!",
         },
       ]);
     } finally {
@@ -86,7 +86,7 @@ export const ChatInterface = ({ documentId }: { documentId: string }) => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-900 transition-colors">
+    <div className="flex flex-col h-full bg-gray-50 dark:bg-black transition-colors">
       <div className="flex-1 p-3 overflow-y-auto space-y-2 text-sm">
         {messages.map((m) => (
           <div
