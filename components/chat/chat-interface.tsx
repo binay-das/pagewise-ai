@@ -91,11 +91,10 @@ export const ChatInterface = ({ documentId }: { documentId: string }) => {
         {messages.map((m) => (
           <div
             key={m.id}
-            className={`max-w-[75%] p-2 rounded-2xl shadow-sm transition-colors whitespace-pre-wrap text-sm ${
-              m.role === "user"
+            className={`max-w-[75%] w-fit p-2 rounded-2xl shadow-sm transition-colors whitespace-pre-wrap text-sm ${m.role === "user"
                 ? "bg-blue-500 text-white ml-auto rounded-br-none"
                 : "bg-white text-gray-800 dark:bg-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700 rounded-bl-none"
-            }`}
+              }`}
           >
             {m.content || (isLoading && m.role === "assistant" ? "..." : "")}
           </div>
