@@ -60,25 +60,31 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
                         {isPdfVisible ? (
                             <>
                                 <PanelLeftClose className="w-4 h-4" />
-                                <span className="text-xs">Hide PDF</span>
+                                <span className="text-xs hidden lg:inline">Hide PDF</span>
+                                <span className="text-xs lg:hidden">Switch to Assistant</span>
                             </>
                         ) : (
                             <>
                                 <PanelLeftOpen className="w-4 h-4" />
-                                <span className="text-xs">Show PDF</span>
+                                <span className="text-xs hidden lg:inline">Show PDF</span>
+                                <span className="text-xs lg:hidden">Switch to PDF</span>
                             </>
                         )}
                     </Button>
                 </div>
             </div>
 
-            <div className="flex flex-1 overflow-hidden relative">
-                {/* pdf */}
-                <div className={`
-                flex flex-col border-r bg-muted/20
-                transition-all duration-300 ease-in-out overflow-hidden
-                ${isPdfVisible ? "w-1/2 opacity-100" : "w-0 opacity-0 border-r-0"}
-            `}
+            <div className="flex flex-1 overflow-hidden relative flex-col lg:flex-row">
+
+                <div
+                    className={`
+                        flex flex-col bg-muted/20 transition-all duration-300 ease-in-out overflow-hidden
+                        ${isPdfVisible
+                            ? "h-full w-full lg:h-full lg:w-1/2 opacity-100"
+                            : "h-0 w-full lg:h-full lg:w-0 opacity-0 lg:border-none"
+                        }
+                        border-b lg:border-b-0 lg:border-r
+                    `}
                 >
                     <iframe
                         src={`${document.originalFileUrl}#zoom=page-fit`}
@@ -87,30 +93,37 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
                     />
                 </div>
 
-                {/* tabs */}
-                <div className={`flex flex-col transition-all duration-300 ease-in-out overflow-hidden ${isPdfVisible ? "w-1/2" : "w-full"}`}>
+                <div
+                    className={`
+                        flex flex-col transition-all duration-300 ease-in-out overflow-hidden
+                        ${isPdfVisible
+                            ? "h-0 w-full lg:h-full lg:w-1/2"
+                            : "h-full w-full lg:h-full lg:w-full"
+                        }
+                    `}
+                >
                     <Tabs defaultValue="chat" className="flex-1 flex flex-col h-full overflow-hidden">
                         <TabsList className="grid w-full grid-cols-3 rounded-none bg-muted/50 p-1 h-12 flex-shrink-0 border-b">
                             <TabsTrigger
                                 value="chat"
-                                className="flex items-center justify-center space-x-2 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all text-sm"
+                                className="flex items-center justify-center space-x-2 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all text-sm py-2"
                             >
                                 <MessageSquare className="w-4 h-4" />
-                                <span>Chat</span>
+                                <span className="hidden sm:inline">Chat</span>
                             </TabsTrigger>
                             <TabsTrigger
                                 value="summary"
-                                className="flex items-center justify-center space-x-2 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all text-sm"
+                                className="flex items-center justify-center space-x-2 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all text-sm py-2"
                             >
                                 <Brain className="w-4 h-4" />
-                                <span>Summary</span>
+                                <span className="hidden sm:inline">Summary</span>
                             </TabsTrigger>
                             <TabsTrigger
                                 value="extracted"
-                                className="flex items-center justify-center space-x-2 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all text-sm"
+                                className="flex items-center justify-center space-x-2 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all text-sm py-2"
                             >
                                 <FileCheck className="w-4 h-4" />
-                                <span>Extracted Info</span>
+                                <span className="hidden sm:inline">Extracted Info</span>
                             </TabsTrigger>
                         </TabsList>
 
@@ -128,14 +141,14 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
                             className="flex-1 p-0 m-0 data-[state=inactive]:hidden overflow-hidden"
                         >
                             <div className="h-full flex flex-col overflow-y-auto">
-                                <div className="p-6 max-w-3xl mx-auto w-full">
+                                <div className="p-4 md:p-6 max-w-3xl mx-auto w-full">
                                     <div className="flex items-center gap-3 mb-6 pb-4 border-b">
                                         <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
                                             <Brain className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                                         </div>
                                         <div>
                                             <h3 className="font-semibold text-lg">Thinking Summary</h3>
-                                            <p className="text-sm text-muted-foreground">AI-generated insights from your document</p>
+                                            <p className="text-sm text-muted-foreground">AI-generated insights</p>
                                         </div>
                                     </div>
                                     <div className="prose prose-sm dark:prose-invert max-w-none">
