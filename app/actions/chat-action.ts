@@ -1,24 +1,28 @@
 "use server";
 
 import { CoreMessage, streamText } from "ai";
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
+// import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { createClient } from "@supabase/supabase-js";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
-import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+// import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+import { streamOllamaChat, createOllamaStream, OllamaEmbeddings } from "@/lib/ollama";
 
-const google = createGoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY!,
-});
+
+// const google = createGoogleGenerativeAI({
+//   apiKey: process.env.GEMINI_API_KEY!,
+// });
 
 const supabaseClient = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_KEY!
 );
 
-const embeddings = new GoogleGenerativeAIEmbeddings({
-  apiKey: process.env.GEMINI_API_KEY!,
-  modelName: "text-embedding-004",
-});
+// const embeddings = new GoogleGenerativeAIEmbeddings({
+//   apiKey: process.env.GEMINI_API_KEY!,
+//   modelName: "text-embedding-004",
+// });
+
+const embeddings = new OllamaEmbeddings();
 
 export async function askQuestionAction(
   messages: CoreMessage[],
@@ -51,10 +55,27 @@ export async function askQuestionAction(
   USER'S QUESTION:
   ${question}`;
 
-  const result = await streamText({
-    model: google("models/gemini-2.0-flash"),
-    prompt,
-  });
+  // const result = await streamText({
+  //   model: google("models/gemini-2.0-flash"),
+  //   prompt,
+  // });
 
-  return result.toTextStreamResponse();
+  // return result.toTextStreamResponse();
+
+  const ollamaMessages = [
+    { role: "system", content: "You are a helpful AI assistant for the PageWise app. Answer based ONLY on the provided context." },
+    ...messages.map(m => ({ role: m.role, content: m.content as string })),
+    { role: "user", content: `CONTEXT:\n${context}\n\nQUESTION: ${question}` }
+  ];
+
+  const stream = await streamOllamaChat(ollamaMessages);
+  if (!stream) throw new Error("Failed to get stream from Ollama");
+
+  const customStream = await createOllamaStream(stream);
+
+  return new Response(customStream, {
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8',
+    },
+  });
 }

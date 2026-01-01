@@ -1,7 +1,8 @@
 "use server";
 
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+// import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+import { OllamaEmbeddings } from "@/lib/ollama";
 import { PrismaVectorStore } from "@langchain/community/vectorstores/prisma";
 import { Prisma } from "@prisma/client";
 import type { DocumentChunk as PrismaDocumentChunk } from "@prisma/client";
@@ -27,10 +28,12 @@ export async function processAndEmbedDocument(pdfSummaryId: string) {
       return { success: true, message: "No text to chunk." };
     }
 
-    const embeddings = new GoogleGenerativeAIEmbeddings({
-      apiKey: process.env.GEMINI_API_KEY!,
-      modelName: "text-embedding-004",
-    });
+    // const embeddings = new GoogleGenerativeAIEmbeddings({
+    //   apiKey: process.env.GEMINI_API_KEY!,
+    //   modelName: "text-embedding-004",
+    // });
+
+    const embeddings = new OllamaEmbeddings();
 
     // create rows without embeddings
     const created = await prisma.$transaction(
