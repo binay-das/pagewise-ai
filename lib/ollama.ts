@@ -62,16 +62,25 @@ export async function streamOllamaChat(messages: { role: string; content: string
         }),
     });
 
-    if (!response.ok) {
+    if (!response.ok || !response.body) {
         throw new Error(`Ollama chat error: ${response.statusText}`);
     }
 
-    return response.body; // Return the stream directly
+    return response.body;
 }
 
 export const generateSummaryFromOllama = async (pdfText: string) => {
     try {
-        const prompt = `Transform this document into an engaging, easy-to-read summary with contextually relevant emojis and proper markdown formatting:\n\n'${pdfText}'`;
+        const prompt = `
+        Transform the following document into an engaging, easy-to-read summary.
+        - Use clear sections
+        - Add contextually relevant emojis
+        - Use proper Markdown formatting
+
+        Document:
+        ${pdfText}
+        `;
+
         const text = await generateOllamaText(prompt);
 
         if (!text) {
@@ -96,12 +105,18 @@ export async function createOllamaStream(stream: ReadableStream) {
                 while (true) {
                     const { done, value } = await reader.read();
                     if (done) break;
-                    const chunk = decoder.decode(value);
+                    const chunk = decoder.decode(value, { stream: true });
                     const lines = chunk.split('\n');
                     for (const line of lines) {
                         if (!line.trim()) continue;
                         try {
                             const json = JSON.parse(line);
+
+                            if (json.done) {
+                                controller.close();
+                                return;
+                            }
+
                             if (json.message?.content) {
                                 controller.enqueue(encoder.encode(json.message.content));
                             }
