@@ -99,12 +99,19 @@ export async function createOllamaStream(stream: ReadableStream) {
     const encoder = new TextEncoder();
     const decoder = new TextDecoder();
 
+    let buffer = "";
+
     return new ReadableStream({
         async start(controller) {
             try {
                 while (true) {
                     const { done, value } = await reader.read();
                     if (done) break;
+
+                    buffer += decoder.decode(value, { stream: true });
+
+                    let newlineIndex;
+
                     const chunk = decoder.decode(value, { stream: true });
                     const lines = chunk.split('\n');
                     for (const line of lines) {
@@ -132,4 +139,34 @@ export async function createOllamaStream(stream: ReadableStream) {
             }
         },
     });
+}
+
+
+
+
+
+
+
+
+export async function generateSafeSummary(fullExtractedText: string) {
+    const chunkSize = 2000;
+    const chunks = [];
+
+    for (let i = 0; i < fullExtractedText.length; i+= chunkSize) {
+        chunks.push(fullExtractedText.slice(i, i + chunkSize));
+    }
+
+    const partialSummaries = await Promise.all(
+        chunks.map(chunk =>
+            generateOllamaText(`Extract key points...\n${chunk}`)
+        )
+    );
+
+    return generateOllamaText(`
+        Combine the following section summaries into a single clear summary.
+        Use Markdown and relevant emojis.
+
+        SUMMARIES:
+        ${partialSummaries.join("\n")}
+    `);
 }

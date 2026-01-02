@@ -2,7 +2,7 @@
 
 import { authOptions } from "@/lib/auth";
 // import { generateSummaryFromGemini } from "@/lib/gemini";
-import { generateSummaryFromOllama } from "@/lib/ollama";
+import { generateSafeSummary, generateSummaryFromOllama } from "@/lib/ollama";
 import { fetchAndExtractText } from "@/lib/langchain";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
@@ -25,7 +25,8 @@ export async function generateSummary(url: string) {
         let summary: string | null = null;
         try {
             // summary = await generateSummaryFromGemini(pdfText);
-            summary = await generateSummaryFromOllama(pdfText);
+            // summary = await generateSummaryFromOllama(pdfText);
+            summary = await generateSafeSummary(pdfText);
             console.log("summary", summary);
         } catch (error) {
             console.error("Summary generation failed: ", error);

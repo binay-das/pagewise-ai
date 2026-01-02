@@ -43,17 +43,17 @@ export async function askQuestionAction(
 
   const context = relevantDocs.map((doc) => doc.pageContent).join("\n\n---\n\n");
 
-  const prompt = `You are a helpful AI assistant for the PageWise app. Your task is to answer the user's question based ONLY on the provided context from their uploaded document.
+  // const prompt = `You are a helpful AI assistant for the PageWise app. Your task is to answer the user's question based ONLY on the provided context from their uploaded document.
   
-  If the answer is not found in the context, clearly state "I couldn't find an answer to that in the document." Do not use any external knowledge or make up information.
+  // If the answer is not found in the context, clearly state "I couldn't find an answer to that in the document." Do not use any external knowledge or make up information.
   
-  CONTEXT FROM THE DOCUMENT:
-  ---
-  ${context}
-  ---
+  // CONTEXT FROM THE DOCUMENT:
+  // ---
+  // ${context}
+  // ---
   
-  USER'S QUESTION:
-  ${question}`;
+  // USER'S QUESTION:
+  // ${question}`;
 
   // const result = await streamText({
   //   model: google("models/gemini-2.0-flash"),
@@ -63,10 +63,25 @@ export async function askQuestionAction(
   // return result.toTextStreamResponse();
 
   const ollamaMessages = [
-    { role: "system", content: "You are a helpful AI assistant for the PageWise app. Answer based ONLY on the provided context." },
-    ...messages.map(m => ({ role: m.role, content: m.content as string })),
-    { role: "user", content: `CONTEXT:\n${context}\n\nQUESTION: ${question}` }
-  ];
+  {
+    role: "system",
+    content:
+      "You are a helpful AI assistant for the PageWise app. " +
+      "Answer ONLY using the provided context. " +
+      "If the answer is not found, say: 'I couldn't find an answer to that in the document.'"
+  },
+  {
+    role: "user",
+    content: `
+      CONTEXT:
+      ${context}
+
+      QUESTION:
+      ${question}
+    `
+      }
+    ];
+
 
   const stream = await streamOllamaChat(ollamaMessages);
   if (!stream) throw new Error("Failed to get stream from Ollama");
