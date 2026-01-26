@@ -87,7 +87,7 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
                     `}
                 >
                     <iframe
-                        src={`${document.originalFileUrl}#zoom=page-fit`}
+                        src={`/api/pdf?url=${encodeURIComponent(document.originalFileUrl)}#zoom=page-fit`}
                         className="flex-1 w-full border-0"
                         title={document.title ?? "PDF Document"}
                     />
