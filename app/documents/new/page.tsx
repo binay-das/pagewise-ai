@@ -2,15 +2,16 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useEdgeStore } from "@/lib/edgestore";
+// import { useEdgeStore } from "@/lib/edgestore";
+import { uploadPdfToMinio } from "@/lib/object-storage.upload";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { generateSummary, storePdfSummaryAction } from "@/app/actions/upload-actions";
-import { 
-  Upload, 
-  FileText, 
-  CheckCircle, 
-  AlertCircle, 
+import {
+  Upload,
+  FileText,
+  CheckCircle,
+  AlertCircle,
   Loader2
 } from "lucide-react";
 
@@ -19,7 +20,7 @@ export default function NewDocument() {
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [message, setMessage] = useState<string>("");
-  const { edgestore } = useEdgeStore();
+  // const { edgestore } = useEdgeStore();
   const router = useRouter();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,42 +52,48 @@ export default function NewDocument() {
 
     try {
       setMessage("Uploading...");
-      const res = await edgestore.publicFiles.upload({ file });
-      uploadedUrl = res.url;
+      // const res = await edgestore.publicFiles.upload({ file });
+      // uploadedUrl = res.url;
+
+      const res = await uploadPdfToMinio(file);
+      console.log("ressssss: ", res);
+      const { key, url } = res;
 
       setMessage("Processing with AI...");
-      const summaryRes = await generateSummary(res.url);
-      
-      if (!summaryRes.success || !summaryRes.data?.summary) {
-        throw new Error("Failed to generate summary.");
+      // const summaryRes = await generateSummary(res.url);
+      const summaryRes = await generateSummary(key);
+
+      if (!summaryRes.success || !summaryRes.data) {
+        throw new Error("Failed to extract text.");
       }
 
       setMessage("Saving...");
       const saved = await storePdfSummaryAction({
-        fileUrl: res.url,
+        // fileUrl: res.url,
+        fileUrl: url,
         summary: summaryRes.data.summary,
         extractedText: summaryRes.data.pdfText,
         title: file.name.replace(/\.pdf$/i, ""),
         fileName: file.name,
       });
 
-      if (!saved.success || !saved.data) {
-        throw new Error(saved.message || "Failed to save document");
-      }
+      // if (!saved.success || !saved.data) {
+      //   throw new Error(saved.message || "Failed to save document");
+      // }
 
       setStatus("success");
       setMessage("Processing complete!");
-      
+
       setTimeout(() => {
-        router.push(`/documents/${saved.data.id}`);
+        // router.push(`/documents/${saved.data.id}`);
       }, 1000);
 
     } catch (error) {
       console.error("Upload error:", error);
-      
+
       if (uploadedUrl) {
         try {
-          await edgestore.publicFiles.delete({ url: uploadedUrl });
+          // await edgestore.publicFiles.delete({ url: uploadedUrl });
           console.log("File deleted from EdgeStore due to failure");
         } catch (deleteError) {
           console.error("Failed to delete file from EdgeStore:", deleteError);
@@ -117,12 +124,12 @@ export default function NewDocument() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
-              <label 
-                htmlFor="file-upload" 
+              <label
+                htmlFor="file-upload"
                 className={`
                   block w-full p-8 border border-dashed rounded-lg cursor-pointer transition-all duration-200
-                  ${file 
-                    ? "border-neutral-900 bg-neutral-50 dark:bg-neutral-900 dark:border-neutral-100" 
+                  ${file
+                    ? "border-neutral-900 bg-neutral-50 dark:bg-neutral-900 dark:border-neutral-100"
                     : "border-neutral-300 dark:border-neutral-700 hover:border-neutral-400 dark:hover:border-neutral-600 hover:bg-neutral-50 dark:hover:bg-neutral-900"
                   }
                   ${isLoading ? "pointer-events-none opacity-50" : ""}
@@ -136,7 +143,7 @@ export default function NewDocument() {
                   className="hidden"
                   disabled={isLoading}
                 />
-                
+
                 <div className="text-center">
                   {!file ? (
                     <>
@@ -163,11 +170,11 @@ export default function NewDocument() {
             {message && (
               <div className={`
                 flex items-center space-x-2 p-3 rounded-md text-sm
-                ${status === "success" 
-                  ? "bg-neutral-100 dark:bg-neutral-900 text-neutral-900 dark:text-white" 
+                ${status === "success"
+                  ? "bg-neutral-100 dark:bg-neutral-900 text-neutral-900 dark:text-white"
                   : status === "error"
-                  ? "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
-                  : "bg-neutral-50 dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400"
+                    ? "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
+                    : "bg-neutral-50 dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400"
                 }
               `}>
                 {isLoading ? (

@@ -2,15 +2,16 @@
 
 import { authOptions } from "@/lib/auth";
 // import { generateSummaryFromGemini } from "@/lib/gemini";
-import { generateSafeSummary, generateSummaryFromOllama } from "@/lib/ollama";
-import { fetchAndExtractText } from "@/lib/langchain";
+// import { generateSafeSummary, generateSummaryFromOllama } from "@/lib/ollama";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
-import { processAndEmbedDocument } from "./embed-actions";
+import { extractTextFromPdf } from "@/lib/langchain";
+import { readPdfFromStorage } from "@/lib/object-storage.read";
+import { processAndEmbedDocument } from "@/app/actions/embed-actions";
 
 
-export async function generateSummary(url: string) {
-    if (!url) {
+export async function generateSummary(fileKey: string) {
+    if (!fileKey) {
         return {
             success: false,
             message: "File upload failed or response is invalid",
@@ -19,35 +20,22 @@ export async function generateSummary(url: string) {
     }
 
     try {
-        const pdfText = await fetchAndExtractText(url);
-        console.log(pdfText);
+        const pdfBuffer = await readPdfFromStorage(fileKey);
+        const pdfText = await extractTextFromPdf(pdfBuffer);
+        console.log("PDF Text Extracted, length:", pdfText.length);
 
-        let summary: string | null = null;
-        try {
-            // summary = await generateSummaryFromGemini(pdfText);
-            // summary = await generateSummaryFromOllama(pdfText);
-            summary = await generateSafeSummary(pdfText);
-            console.log("summary", summary);
-        } catch (error) {
-            console.error("Summary generation failed: ", error);
-        }
-
-        if (!summary) {
-            return {
-                success: false,
-                message: "Failed to generate summary",
-                data: null,
-            };
-        }
+        // Optimization: Skip blocking summary generation during upload.
+        // Summary can be generated on-demand later.
+        const summary: string | null = null;
 
         return {
             success: true,
-            message: "Summary generated successfully",
+            message: "Text extracted successfully",
             data: { summary, pdfText },
         };
 
     } catch (error) {
-        console.error("Error generating summary:", error);
+        console.error("Error extracted text:", error);
         return {
             success: false,
             message: "Failed to extract text from PDF",
@@ -65,7 +53,7 @@ export async function storePdfSummaryAction({
     extractedText
 }: {
     fileUrl: string;
-    summary: string;
+    summary: string | null;
     title: string;
     fileName: string;
     extractedText: string;
@@ -84,7 +72,7 @@ export async function storePdfSummaryAction({
             data: {
                 userId: user.id,
                 originalFileUrl: fileUrl,
-                summaryText: summary,
+                summaryText: summary ?? "",
                 title,
                 fileName,
                 extractedText
