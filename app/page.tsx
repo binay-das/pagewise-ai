@@ -1,8 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { ExtractionVisualization } from "@/components/home/extraction-visualization";
 import {
   Upload,
   Brain,
@@ -16,9 +14,10 @@ import {
   Smartphone,
 } from "lucide-react";
 import Link from "next/link";
-import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { ExtractionVisualization } from "@/components/home/extraction-visualization";
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
@@ -64,7 +63,7 @@ export default async function HomePage() {
                   </Button>
                 </Link>
                 <Link href={"#how-it-works"}>
-                   <Button
+                  <Button
                     variant="outline"
                     size="lg"
                     className="w-full sm:w-auto border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900 text-neutral-900 dark:text-neutral-100 font-medium px-8 py-6 rounded-full transition-all duration-200"
@@ -87,7 +86,7 @@ export default async function HomePage() {
             </div>
 
             <div className="relative">
-               <ExtractionVisualization />
+              <ExtractionVisualization />
             </div>
           </div>
         </div>
