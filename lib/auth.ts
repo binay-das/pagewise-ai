@@ -1,7 +1,8 @@
-import { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
-import { prisma } from "./prisma";
+import { prisma } from "@/lib/prisma";
+import { NextAuthOptions } from "next-auth";
+import { applicationConfig } from "@/lib/config";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 
 export const authOptions: NextAuthOptions = {
@@ -24,8 +25,7 @@ export const authOptions: NextAuthOptions = {
                 if (!user || !user.password) {
                     throw new Error("No user found with this email");
                 }
-                console.log("credentials", credentials);
-                console.log("db user", user);
+                console.log("db user id: ", user.id, "email: ", user.email);
 
                 const isValid = await bcrypt.compare(credentials.password, user.password);
 
@@ -61,7 +61,7 @@ export const authOptions: NextAuthOptions = {
         },
     },
 
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: applicationConfig.auth.secret,
 
     pages: {
         signIn: '/signin',

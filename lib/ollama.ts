@@ -1,7 +1,10 @@
-export const OLLAMA_URL = "http://localhost:11434";
+import { applicationConfig } from "@/lib/config";
 
-export async function generateOllamaText(prompt: string, model: string = "llama3.2") {
-    const response = await fetch(`${OLLAMA_URL}/api/generate`, {
+export const llmBaseUrl = applicationConfig.ai.baseUrl;
+
+export async function generateOllamaText(prompt: string, model: string = applicationConfig.ai.textModel) {
+    console.log(`[Ollama] Generating text with model: ${model}`);
+    const response = await fetch(`${llmBaseUrl}/api/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -19,8 +22,8 @@ export async function generateOllamaText(prompt: string, model: string = "llama3
     return data.response;
 }
 
-export async function generateOllamaEmbeddings(text: string, model: string = "nomic-embed-text") {
-    const response = await fetch(`${OLLAMA_URL}/api/embeddings`, {
+export async function generateOllamaEmbeddings(text: string, model: string = applicationConfig.ai.embeddingModel) {
+    const response = await fetch(`${llmBaseUrl}/api/embeddings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -51,8 +54,9 @@ export class OllamaEmbeddings implements EmbeddingsInterface {
     }
 }
 
-export async function streamOllamaChat(messages: { role: string; content: string }[], model: string = "llama3.2") {
-    const response = await fetch(`${OLLAMA_URL}/api/chat`, {
+export async function streamOllamaChat(messages: { role: string; content: string }[], model: string = applicationConfig.ai.textModel) {
+    console.log(`[Ollama] Streaming chat with model: ${model}`);
+    const response = await fetch(`${llmBaseUrl}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -152,7 +156,7 @@ export async function generateSafeSummary(fullExtractedText: string) {
     const chunkSize = 2000;
     const chunks = [];
 
-    for (let i = 0; i < fullExtractedText.length; i+= chunkSize) {
+    for (let i = 0; i < fullExtractedText.length; i += chunkSize) {
         chunks.push(fullExtractedText.slice(i, i + chunkSize));
     }
 
