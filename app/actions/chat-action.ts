@@ -30,7 +30,8 @@ const embeddings = new OllamaEmbeddings();
 
 export async function askQuestionAction(
   messages: CoreMessage[],
-  documentId: string
+  documentId: string,
+  userMessageId: string
 ) {
   const lastUserMessage = messages[messages.length - 1];
   const question = lastUserMessage.content as string;
@@ -93,7 +94,38 @@ export async function askQuestionAction(
 
   const customStream = await createOllamaStream(stream);
 
-  return new Response(customStream, {
+  let fullResponse = "";
+  const reader = customStream.getReader();
+  const encoder = new TextEncoder();
+
+  const savableStream = new ReadableStream({
+    async start(controller) {
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) {
+            await prisma.message.create({
+              data: {
+                role: "assistant",
+                content: fullResponse,
+                pdfSummaryId: documentId,
+              },
+            });
+            controller.close();
+            break;
+          }
+
+          const chunk = new TextDecoder().decode(value);
+          fullResponse += chunk;
+          controller.enqueue(encoder.encode(chunk));
+        }
+      } catch (error) {
+        controller.error(error);
+      }
+    }
+  });
+
+  return new Response(savableStream, {
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
     },
