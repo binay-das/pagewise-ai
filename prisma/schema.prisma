@@ -30,19 +30,31 @@ model PdfSummary {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  chunks DocumentChunk[]
+  chunks   DocumentChunk[]
+  messages Message[]
 }
 
-
-
 model DocumentChunk {
-  id           String   @id @default(cuid())
-  content      String
+  id      String @id @default(cuid())
+  content String
 
-  embedding    Unsupported("vector(768)")?
+  embedding Unsupported("vector(768)")?
 
   pdfSummaryId String
   pdfSummary   PdfSummary @relation(fields: [pdfSummaryId], references: [id], onDelete: Cascade)
 
   @@index([pdfSummaryId])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  role      String
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+
+  pdfSummaryId String
+  pdfSummary   PdfSummary @relation(fields: [pdfSummaryId], references: [id], onDelete: Cascade)
+
+  @@index([pdfSummaryId])
+  @@index([createdAt])
 }
