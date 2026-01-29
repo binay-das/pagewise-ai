@@ -3,6 +3,7 @@
 import { SendHorizontal } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
+import { CopyButton } from "./copy-button";
 
 type Message = {
   id: string;
@@ -108,16 +109,27 @@ export const ChatInterface = ({ documentId }: { documentId: string }) => {
         {messages.map((m) => (
           <div
             key={m.id}
-            className={`max-w-[75%] w-fit p-2 rounded-2xl shadow-sm transition-colors whitespace-pre-wrap text-sm ${m.role === "user"
-              ? "bg-blue-500 text-white ml-auto rounded-br-none"
-              : "bg-white text-gray-800 dark:bg-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700 rounded-bl-none"
+            className={`group relative max-w-[75%] w-fit ${m.role === "user" ? "ml-auto" : ""
               }`}
           >
-            {m.role === "assistant" ? (
-              <MarkdownRenderer content={m.content || (isLoading && m.role === "assistant" ? "..." : "")} />
-            ) : (
-              m.content
-            )}
+            <div
+              className={`p-2 rounded-2xl shadow-sm transition-colors whitespace-pre-wrap text-sm ${m.role === "user"
+                ? "bg-blue-500 text-white rounded-br-none"
+                : "bg-white text-gray-800 dark:bg-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700 rounded-bl-none"
+                }`}
+            >
+              {m.role === "assistant" ? (
+                <MarkdownRenderer content={m.content || (isLoading && m.role === "assistant" ? "..." : "")} />
+              ) : (
+                m.content
+              )}
+            </div>
+            <div
+              className={`absolute top-1 opacity-0 group-hover:opacity-100 transition-opacity ${m.role === "user" ? "-left-8" : "-right-8"
+                }`}
+            >
+              <CopyButton text={m.content} />
+            </div>
           </div>
         ))}
         <div ref={messagesEndRef} />
