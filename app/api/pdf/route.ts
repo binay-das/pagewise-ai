@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { applicationConfig } from "@/lib/config";
 import { NextRequest, NextResponse } from "next/server";
 import { readPdfFromStorage } from "@/lib/object-storage.read";
@@ -7,7 +8,25 @@ export async function GET(req: NextRequest) {
     const url = searchParams.get("url");
 
     if (!url) {
-        return new NextResponse("Missing url", { status: 400 });
+        logger.warn("PDF request missing URL parameter");
+        return new NextResponse(
+            JSON.stringify({ error: "Missing url parameter" }),
+            {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            }
+        );
+    }
+
+    if (!url.trim()) {
+        logger.warn("PDF request with empty URL");
+        return new NextResponse(
+            JSON.stringify({ error: "URL cannot be empty" }),
+            {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            }
+        );
     }
 
     try {
@@ -23,12 +42,15 @@ export async function GET(req: NextRequest) {
             key = url;
         }
 
-        // check decode
         key = decodeURIComponent(key);
+
+        logger.debug({ bucket }, "Fetching PDF from storage");
 
         const pdfBuffer = await readPdfFromStorage(key);
 
-        return new NextResponse(pdfBuffer as any, {
+        logger.info({ size: pdfBuffer.length, bucket }, "PDF served successfully");
+
+        return new NextResponse(new Uint8Array(pdfBuffer), {
             headers: {
                 "Content-Type": "application/pdf",
                 "Content-Disposition": `inline; filename="${key}"`,
@@ -36,7 +58,13 @@ export async function GET(req: NextRequest) {
         });
 
     } catch (error) {
-        console.error("Error serving PDF:", error);
-        return new NextResponse("Error serving PDF", { status: 500 });
+        logger.error({ error }, "Error serving PDF");
+        return new NextResponse(
+            JSON.stringify({ error: "Error serving PDF" }),
+            {
+                status: 500,
+                headers: { "Content-Type": "application/json" },
+            }
+        );
     }
 }
