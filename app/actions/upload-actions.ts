@@ -8,6 +8,7 @@ import { getServerSession } from "next-auth";
 import { extractTextFromPdf } from "@/lib/langchain";
 import { readPdfFromStorage } from "@/lib/object-storage.read";
 import { processAndEmbedDocument } from "@/app/actions/embed-actions";
+import { logger, maskId } from "@/lib/logger";
 
 
 export async function generateSummary(fileKey: string) {
@@ -22,7 +23,7 @@ export async function generateSummary(fileKey: string) {
     try {
         const pdfBuffer = await readPdfFromStorage(fileKey);
         const pdfText = await extractTextFromPdf(pdfBuffer);
-        console.log("PDF Text Extracted, length:", pdfText.length);
+        logger.info({ textLength: pdfText.length }, "PDF text extracted successfully");
 
         // Optimization: Skip blocking summary generation during upload.
         // Summary can be generated on-demand later.
@@ -35,7 +36,7 @@ export async function generateSummary(fileKey: string) {
         };
 
     } catch (error) {
-        console.error("Error extracted text:", error);
+        logger.error({ error }, "Error extracting text from PDF");
         return {
             success: false,
             message: "Failed to extract text from PDF",
@@ -81,7 +82,7 @@ export async function storePdfSummaryAction({
 
         await processAndEmbedDocument(savedPdfSummary.id);
 
-        console.log(`Kicked off embedding for PdfSummary ID: ${savedPdfSummary.id}`);
+        logger.info({ pdfSummaryId: savedPdfSummary.id, userId: maskId(user.id) }, "Embedding process started for PDF");
 
         return {
             success: true,
@@ -89,7 +90,7 @@ export async function storePdfSummaryAction({
             data: savedPdfSummary,
         };
     } catch (error) {
-        console.error("Error storing summary:", error);
+        logger.error({ error }, "Error storing PDF summary in database");
         return {
             success: false,
             message: "Failed to store summary in db",

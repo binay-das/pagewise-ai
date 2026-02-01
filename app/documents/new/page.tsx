@@ -14,6 +14,7 @@ import {
   AlertCircle,
   Loader2
 } from "lucide-react";
+import { logger } from "@/lib/logger";
 
 export default function NewDocument() {
   const [file, setFile] = useState<File | null>(null);
@@ -48,15 +49,15 @@ export default function NewDocument() {
     setIsLoading(true);
     setStatus("idle");
 
-    let uploadedUrl: string | null = null;
+    let res: any = null;
 
     try {
       setMessage("Uploading...");
       // const res = await edgestore.publicFiles.upload({ file });
       // uploadedUrl = res.url;
 
-      const res = await uploadPdfToMinio(file);
-      console.log("ressssss: ", res);
+      res = await uploadPdfToMinio(file);
+      logger.info("PDF uploaded successfully");
       const { key, url } = res;
 
       setMessage("Processing with AI...");
@@ -84,19 +85,21 @@ export default function NewDocument() {
       setStatus("success");
       setMessage("Processing complete!");
 
-      setTimeout(() => {
-        // router.push(`/documents/${saved.data.id}`);
-      }, 1000);
+      if (saved.success && saved.data) {
+        setTimeout(() => {
+          router.push(`/documents/${saved.data.id}`);
+        }, 1500);
+      }
 
     } catch (error) {
-      console.error("Upload error:", error);
+      logger.error({ error }, "Upload error");
 
-      if (uploadedUrl) {
+      if (res && res.fileKey) {
         try {
           // await edgestore.publicFiles.delete({ url: uploadedUrl });
-          console.log("File deleted from EdgeStore due to failure");
+          logger.info("File deleted from storage due to failure");
         } catch (deleteError) {
-          console.error("Failed to delete file from EdgeStore:", deleteError);
+          logger.error({ error: deleteError }, "Failed to delete file from storage");
         }
       }
 

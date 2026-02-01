@@ -1,4 +1,5 @@
-import { prisma } from "./prisma";
+import { prisma } from "@/lib/prisma";
+import { logger, maskId } from "@/lib/logger";
 
 export async function getDocuments(userId: string) {
   try {
@@ -14,7 +15,7 @@ export async function getDocuments(userId: string) {
     return documents;
 
   } catch (error) {
-    console.error("Database Error: Failed to fetch documents: ", error);
+    logger.error({ error, userId: maskId(userId) }, "Database error: Failed to fetch documents");
     return [];
   }
 }

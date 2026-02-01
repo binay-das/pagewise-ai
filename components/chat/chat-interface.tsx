@@ -4,6 +4,7 @@ import { SendHorizontal } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { CopyButton } from "./copy-button";
+import { logger } from "@/lib/logger";
 
 type Message = {
   id: string;
@@ -26,7 +27,8 @@ export const ChatInterface = ({ documentId }: { documentId: string }) => {
           setMessages(data.messages || []);
         }
       } catch (error) {
-        console.error("Error fetching chat history:", error);
+        const { maskId } = await import("@/lib/logger");
+        logger.error({ error, documentId: maskId(documentId) }, "Error fetching chat history");
       }
     };
 
@@ -89,7 +91,8 @@ export const ChatInterface = ({ documentId }: { documentId: string }) => {
         );
       }
     } catch (error) {
-      console.error("Error during chat:", error);
+      const { maskId } = await import("@/lib/logger");
+      logger.error({ error, documentId: maskId(documentId) }, "Error during chat");
       setMessages((prev) => [
         ...prev,
         {

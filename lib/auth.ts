@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import { prisma } from "@/lib/prisma";
 import { NextAuthOptions } from "next-auth";
 import { applicationConfig } from "@/lib/config";
+import { logger, maskEmail, maskId } from "@/lib/logger";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 
@@ -25,7 +26,7 @@ export const authOptions: NextAuthOptions = {
                 if (!user || !user.password) {
                     throw new Error("No user found with this email");
                 }
-                console.log("db user id: ", user.id, "email: ", user.email);
+                logger.debug({ userId: maskId(user.id), email: maskEmail(user.email!) }, "User found during authentication");
 
                 const isValid = await bcrypt.compare(credentials.password, user.password);
 

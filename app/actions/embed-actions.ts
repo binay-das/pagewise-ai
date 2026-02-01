@@ -7,6 +7,7 @@ import { PrismaVectorStore } from "@langchain/community/vectorstores/prisma";
 import { Prisma } from "@prisma/client";
 import type { DocumentChunk as PrismaDocumentChunk } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { logger } from "@/lib/logger";
 
 export async function processAndEmbedDocument(pdfSummaryId: string) {
   try {
@@ -59,10 +60,11 @@ export async function processAndEmbedDocument(pdfSummaryId: string) {
 
     await vectorStore.addModels(created);
 
-    console.log(`Embedded ${created.length} chunks for ${pdfSummaryId}`);
+    logger.info({ pdfSummaryId, chunkCount: created.length }, "Document chunks embedded successfully");
     return { success: true, count: created.length };
   } catch (error) {
-    console.error("processAndEmbedDocument error:", error);
+    const { maskId } = await import("@/lib/logger");
+    logger.error({ error, pdfSummaryId: maskId(pdfSummaryId) }, "Error in processAndEmbedDocument");
     throw error;
   }
 }

@@ -1,9 +1,10 @@
 import { applicationConfig } from "@/lib/config";
+import { logger } from "@/lib/logger";
 
 export const llmBaseUrl = applicationConfig.ai.baseUrl;
 
 export async function generateOllamaText(prompt: string, model: string = applicationConfig.ai.textModel) {
-    console.log(`[Ollama] Generating text with model: ${model}`);
+    logger.info({ model }, "Generating text with Ollama");
     const response = await fetch(`${llmBaseUrl}/api/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -55,7 +56,7 @@ export class OllamaEmbeddings implements EmbeddingsInterface {
 }
 
 export async function streamOllamaChat(messages: { role: string; content: string }[], model: string = applicationConfig.ai.textModel) {
-    console.log(`[Ollama] Streaming chat with model: ${model}`);
+    logger.info({ model, messageCount: messages.length }, "Streaming chat with Ollama");
     const response = await fetch(`${llmBaseUrl}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -93,7 +94,7 @@ export const generateSummaryFromOllama = async (pdfText: string) => {
 
         return text;
     } catch (error) {
-        console.error('Ollama API Error:', error);
+        logger.error({ error }, "Ollama API error during summary generation");
         throw error;
     }
 };
@@ -103,18 +104,12 @@ export async function createOllamaStream(stream: ReadableStream) {
     const encoder = new TextEncoder();
     const decoder = new TextDecoder();
 
-    let buffer = "";
-
     return new ReadableStream({
         async start(controller) {
             try {
                 while (true) {
                     const { done, value } = await reader.read();
                     if (done) break;
-
-                    buffer += decoder.decode(value, { stream: true });
-
-                    let newlineIndex;
 
                     const chunk = decoder.decode(value, { stream: true });
                     const lines = chunk.split('\n');
@@ -132,7 +127,7 @@ export async function createOllamaStream(stream: ReadableStream) {
                                 controller.enqueue(encoder.encode(json.message.content));
                             }
                         } catch (e) {
-                            console.log(e);
+                            logger.warn("Failed to parse Ollama stream chunk");
                         }
                     }
                 }

@@ -3,6 +3,7 @@
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import { prisma } from "@/lib/prisma";
+import { logger, maskEmail } from "@/lib/logger";
 
 const SignUpSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -43,7 +44,7 @@ export async function signUpAction(values: z.infer<typeof SignUpSchema>) {
     return { success: "User created successfully!", user };
 
   } catch (error) {
-    console.error("SIGNUP_ACTION_ERROR", error);
+    logger.error({ error, email: maskEmail(email) }, "Signup action error");
     return { error: "An unexpected error occurred." };
   }
 }

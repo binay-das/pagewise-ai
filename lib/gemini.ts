@@ -1,5 +1,6 @@
 import { generateText } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { logger } from "@/lib/logger";
 
 const google = createGoogleGenerativeAI({
     apiKey: process.env.GEMINI_API_KEY,
@@ -22,7 +23,7 @@ export const generateSummaryFromGemini = async (pdfText: string) => {
 
         return text;
     } catch (error) {
-        console.error('Gemini API Error:', error);
+        logger.error({ error }, "Gemini API error");
         throw error;
     }
 };

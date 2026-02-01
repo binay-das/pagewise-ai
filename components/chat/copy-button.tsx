@@ -1,5 +1,6 @@
 "use client";
 
+import { logger } from "@/lib/logger";
 import { Check, Copy } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -18,7 +19,8 @@ export const CopyButton = ({ text, className = "" }: CopyButtonProps) => {
             setCopied(true);
             toast.success("Copied to clipboard!");
             setTimeout(() => setCopied(false), 2000);
-        } catch (error) {
+        } catch (_error) {
+            logger.error({ error: _error }, "Failed to copy");
             toast.error("Failed to copy");
         }
     };

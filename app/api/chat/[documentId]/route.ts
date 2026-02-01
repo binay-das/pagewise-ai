@@ -1,25 +1,30 @@
-import { prisma } from "@/lib/prisma";
-import { authOptions } from "@/lib/auth";
-import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { logger, maskId } from "@/lib/logger";
 
 export async function GET(
     req: NextRequest,
     { params }: { params: Promise<{ documentId: string }> }
 ) {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+        return NextResponse.json(
+            { error: "Unauthorized" },
+            { status: 401 }
+        );
+    }
+
+    const { documentId } = await params;
+
     try {
-        const session = await getServerSession(authOptions);
-        if (!session?.user?.id) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
-
-        const { documentId } = await params;
-
         const document = await prisma.pdfSummary.findFirst({
             where: {
                 id: documentId,
-                userId: session.user.id
-            }
+                userId: session.user.id,
+            },
         });
 
         if (!document) {
@@ -30,12 +35,8 @@ export async function GET(
         }
 
         const messages = await prisma.message.findMany({
-            where: {
-                pdfSummaryId: documentId,
-            },
-            orderBy: {
-                createdAt: "asc",
-            },
+            where: { pdfSummaryId: documentId },
+            orderBy: { createdAt: "asc" },
             select: {
                 id: true,
                 role: true,
@@ -46,10 +47,9 @@ export async function GET(
 
         return NextResponse.json({ messages });
     } catch (error) {
-        console.error("Error fetching messages:", error);
-        return NextResponse.json(
-            { error: "Failed to fetch messages" },
-            { status: 500 }
-        );
+        logger.error({ error, documentId: maskId(documentId) }, "Error fetching messages");
+        return new Response(JSON.stringify({ error: "Failed to fetch messages" }), {
+            status: 500
+        });
     }
 }
