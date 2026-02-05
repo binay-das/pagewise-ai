@@ -4,6 +4,7 @@ import { SendHorizontal } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { CopyButton } from "./copy-button";
+import { TypingIndicator } from "./typing-indicator";
 import { logger } from "@/lib/logger";
 
 type Message = {
@@ -16,11 +17,13 @@ interface ChatInterfaceProps {
   documentId: string;
   messages: Message[];
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const ChatInterface = ({ documentId, messages, setMessages }: ChatInterfaceProps) => {
+export const ChatInterface = ({ documentId, messages, setMessages, isLoading, setIsLoading }: ChatInterfaceProps) => {
   const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isWaitingForFirstToken, setIsWaitingForFirstToken] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,6 +35,9 @@ export const ChatInterface = ({ documentId, messages, setMessages }: ChatInterfa
     if (!input.trim()) return;
 
     setIsLoading(true);
+    setIsWaitingForFirstToken(true);
+
+
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -63,9 +69,16 @@ export const ChatInterface = ({ documentId, messages, setMessages }: ChatInterfa
       ]);
 
       let fullResponse = "";
+      let isFirstChunk = true;
+
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
+
+        if (isFirstChunk) {
+          setIsWaitingForFirstToken(false);
+          isFirstChunk = false;
+        }
 
         const chunk = decoder.decode(value);
         fullResponse += chunk;
@@ -78,6 +91,9 @@ export const ChatInterface = ({ documentId, messages, setMessages }: ChatInterfa
           )
         );
       }
+
+
+
     } catch (error) {
       const { maskId } = await import("@/lib/logger");
       logger.error({ error, documentId: maskId(documentId) }, "Error during chat");
@@ -89,6 +105,9 @@ export const ChatInterface = ({ documentId, messages, setMessages }: ChatInterfa
           content: "Something went wrong. Try again!",
         },
       ]);
+
+      setIsWaitingForFirstToken(false);
+
     } finally {
       setIsLoading(false);
     }
@@ -110,10 +129,13 @@ export const ChatInterface = ({ documentId, messages, setMessages }: ChatInterfa
                 }`}
             >
               {m.role === "assistant" ? (
-                <MarkdownRenderer content={m.content || (isLoading && m.role === "assistant" ? "..." : "")} />
+                <>
+                  {m.content && <MarkdownRenderer content={m.content} />}
+                </>
               ) : (
                 m.content
               )}
+
             </div>
             <div
               className={`absolute top-1 opacity-0 group-hover:opacity-100 transition-opacity ${m.role === "user" ? "-left-8" : "-right-8"
@@ -123,6 +145,15 @@ export const ChatInterface = ({ documentId, messages, setMessages }: ChatInterfa
             </div>
           </div>
         ))}
+
+        {isWaitingForFirstToken && (
+          <div className="group relative max-w-[75%] w-fit">
+            <div className="p-2 rounded-2xl shadow-sm bg-white text-gray-800 dark:bg-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700 rounded-bl-none">
+              <TypingIndicator />
+            </div>
+          </div>
+        )}
+
         <div ref={messagesEndRef} />
       </div>
 

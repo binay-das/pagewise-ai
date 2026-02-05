@@ -39,6 +39,7 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
     const [isGenerating, setIsGenerating] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
     const [isMessagesLoaded, setIsMessagesLoaded] = useState(false);
+    const [isChatLoading, setIsChatLoading] = useState(false);
 
     useEffect(() => {
         const fetchChatHistory = async () => {
@@ -162,7 +163,7 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
                             className="flex-1 p-0 m-0 data-[state=inactive]:hidden overflow-hidden relative"
                         >
                             <div className="absolute inset-0 flex flex-col">
-                                <ChatInterface documentId={document.id} messages={messages} setMessages={setMessages} />
+                                <ChatInterface documentId={document.id} messages={messages} setMessages={setMessages} isLoading={isChatLoading} setIsLoading={setIsChatLoading} />
                             </div>
                         </TabsContent>
 
