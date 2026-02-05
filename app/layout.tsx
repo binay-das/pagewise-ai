@@ -5,6 +5,7 @@ import AuthProvider from "@/components/AuthProvider";
 // import { EdgeStoreProvider } from "@/lib/edgestore";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
+import { Navbar } from "@/components/layout/navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,8 +40,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <Navbar />
             {children}
-            <Toaster richColors position="top-right" />
+            <Toaster richColors />
           </ThemeProvider>
           {/* </EdgeStoreProvider> */}
         </AuthProvider>

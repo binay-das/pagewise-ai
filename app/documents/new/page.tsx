@@ -15,52 +15,44 @@ import {
   Loader2
 } from "lucide-react";
 import { logger } from "@/lib/logger";
+import { toast } from "sonner";
 
 export default function NewDocument() {
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
-  const [message, setMessage] = useState<string>("");
-  // const { edgestore } = useEdgeStore();
   const router = useRouter();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const selectedFile = e.target.files[0];
       if (selectedFile.type !== "application/pdf") {
-        setMessage("Please select a PDF file.");
-        setStatus("error");
+        toast.error("Please select a PDF file.");
         return;
       }
       setFile(selectedFile);
-      setStatus("idle");
-      setMessage("");
     }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (!file) {
-      setMessage("Please select a PDF file.");
-      setStatus("error");
+      toast.error("Please select a PDF file.");
       return;
     }
 
     setIsLoading(true);
-    setStatus("idle");
 
     let res: any = null;
 
     try {
-      setMessage("Uploading...");
-      // const res = await edgestore.publicFiles.upload({ file });
-      // uploadedUrl = res.url;
+      toast.info("Uploading...");
 
       res = await uploadPdfToMinio(file);
       logger.info("PDF uploaded successfully");
       const { key, url } = res;
 
-      setMessage("Processing with AI...");
+      toast.info("Processing with AI...");
       // const summaryRes = await generateSummary(res.url);
       const summaryRes = await generateSummary(key);
 
@@ -68,7 +60,7 @@ export default function NewDocument() {
         throw new Error("Failed to extract text.");
       }
 
-      setMessage("Saving...");
+      toast.info("Saving...");
       const saved = await storePdfSummaryAction({
         // fileUrl: res.url,
         fileUrl: url,
@@ -82,8 +74,7 @@ export default function NewDocument() {
       //   throw new Error(saved.message || "Failed to save document");
       // }
 
-      setStatus("success");
-      setMessage("Processing complete!");
+      toast.success("Processing complete!");
 
       if (saved.success && saved.data) {
         setTimeout(() => {
@@ -103,14 +94,13 @@ export default function NewDocument() {
         }
       }
 
-      setStatus("error");
-      setMessage(error instanceof Error ? error.message : "Upload failed");
+      toast.error(error instanceof Error ? error.message : "Upload failed");
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-950 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="w-full max-w-md border-neutral-200 dark:border-neutral-800 shadow-sm">
         <CardContent className="p-8">
           <div className="text-center mb-8">
@@ -170,27 +160,6 @@ export default function NewDocument() {
               </label>
             </div>
 
-            {message && (
-              <div className={`
-                flex items-center space-x-2 p-3 rounded-md text-sm
-                ${status === "success"
-                  ? "bg-neutral-100 dark:bg-neutral-900 text-neutral-900 dark:text-white"
-                  : status === "error"
-                    ? "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
-                    : "bg-neutral-50 dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400"
-                }
-              `}>
-                {isLoading ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : status === "success" ? (
-                  <CheckCircle className="w-4 h-4" />
-                ) : status === "error" ? (
-                  <AlertCircle className="w-4 h-4" />
-                ) : null}
-                <span className="font-medium">{message}</span>
-              </div>
-            )}
-
             <Button
               type="submit"
               className="w-full bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200 transition-all duration-200"
@@ -210,9 +179,9 @@ export default function NewDocument() {
             </Button>
           </form>
 
-          {file && !isLoading && status === "idle" && (
-            <div className="mt-6 p-4 bg-neutral-50 dark:bg-neutral-900 rounded-lg border border-neutral-100 dark:border-neutral-800">
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed text-center">
+          {file && !isLoading && (
+            <div className="mt-6 p-4 bg-muted/50 rounded-lg border border-border">
+              <p className="text-xs text-muted-foreground leading-relaxed text-center">
                 AI will analyze your PDF and create a searchable knowledge base.
               </p>
             </div>

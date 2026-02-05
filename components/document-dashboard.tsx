@@ -62,7 +62,7 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
     }, [document.id, isMessagesLoaded]);
 
     return (
-        <div className="flex flex-col h-full bg-background">
+        <div className="flex flex-col w-full bg-background overflow-hidden" style={{ height: "calc(100vh - 65px)" }}>
             <div className="flex items-center justify-between px-4 py-2 border-b bg-card">
                 <div className="flex items-center space-x-4">
                     <Link
@@ -109,12 +109,12 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
 
                 <div
                     className={`
-                        flex flex-col bg-muted/20 transition-all duration-300 ease-in-out overflow-hidden
+                        flex flex-col transition-all duration-300 ease-in-out overflow-hidden
                         ${isPdfVisible
                             ? "h-full w-full lg:h-full lg:w-1/2 opacity-100"
                             : "h-0 w-full lg:h-full lg:w-0 opacity-0 lg:border-none"
                         }
-                        border-b lg:border-b-0 lg:border-r
+                        border-b lg:border-b-0 lg:border-r border-neutral-200 dark:border-neutral-800
                     `}
                 >
                     <iframe
@@ -134,24 +134,24 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
                     `}
                 >
                     <Tabs defaultValue="chat" className="flex-1 flex flex-col h-full overflow-hidden">
-                        <TabsList className="grid w-full grid-cols-3 rounded-none bg-muted/50 p-1 h-12 flex-shrink-0 border-b">
+                        <TabsList className="grid w-full grid-cols-3 rounded-none bg-background p-0 h-10 flex-shrink-0 border-b border-neutral-200 dark:border-neutral-800">
                             <TabsTrigger
                                 value="chat"
-                                className="flex items-center justify-center space-x-2 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all text-sm py-2"
+                                className="flex items-center justify-center space-x-2 rounded-none data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-neutral-900 dark:data-[state=active]:border-white transition-all text-sm py-2 h-full"
                             >
                                 <MessageSquare className="w-4 h-4" />
                                 <span className="hidden sm:inline">Chat</span>
                             </TabsTrigger>
                             <TabsTrigger
                                 value="summary"
-                                className="flex items-center justify-center space-x-2 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all text-sm py-2"
+                                className="flex items-center justify-center space-x-2 rounded-none data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-neutral-900 dark:data-[state=active]:border-white transition-all text-sm py-2 h-full"
                             >
                                 <Brain className="w-4 h-4" />
                                 <span className="hidden sm:inline">Summary</span>
                             </TabsTrigger>
                             <TabsTrigger
                                 value="extracted"
-                                className="flex items-center justify-center space-x-2 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all text-sm py-2"
+                                className="flex items-center justify-center space-x-2 rounded-none data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-neutral-900 dark:data-[state=active]:border-white transition-all text-sm py-2 h-full"
                             >
                                 <FileCheck className="w-4 h-4" />
                                 <span className="hidden sm:inline">Extracted Info</span>

@@ -8,36 +8,38 @@ import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
 import { ModeToggle } from "../theme-toggle"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { usePathname } from "next/navigation"
 
 export function Navbar() {
-  const [mounted, setMounted] = useState(false)
-  const { data: session } = useSession()
+  const [mounted, setMounted] = useState<boolean>(false);
+  const { data: session } = useSession();
+  const pathName = usePathname();
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
   const handleLogout = async () => {
-    await signOut({ 
-      callbackUrl: "/" 
+    await signOut({
+      callbackUrl: "/"
     })
   }
 
-  if (!mounted) {
+  if (!mounted || pathName === "/") {
     return null
   }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-neutral-200 dark:border-neutral-800 bg-white/80 backdrop-blur-md dark:bg-neutral-950/80">
       <div className="max-w-7xl mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link 
-          href="/documents" 
+        <Link
+          href={session ? "/documents" : "/"}
           className="flex items-center space-x-3 group"
         >
-          <div className="w-8 h-8 bg-neutral-900 dark:bg-white rounded-lg flex items-center justify-center transition-transform group-hover:scale-105">
-            <Sparkles className="w-4 h-4 text-white dark:text-neutral-900" />
+          <div className="w-8 h-8 bg-black dark:bg-white rounded-lg flex items-center justify-center transition-transform group-hover:scale-105">
+            <Sparkles className="w-4 h-4 text-white dark:text-black" />
           </div>
-          <span className="text-lg font-bold text-neutral-900 dark:text-white tracking-tight">
+          <span className="text-lg font-bold text-foreground tracking-tight">
             PageWise
           </span>
         </Link>
@@ -71,7 +73,7 @@ export function Navbar() {
                   </div>
                 </div>
                 <DropdownMenuSeparator className="bg-neutral-100 dark:bg-neutral-800" />
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   onClick={handleLogout}
                   className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 focus:bg-red-50 dark:focus:bg-red-900/10 cursor-pointer"
                 >

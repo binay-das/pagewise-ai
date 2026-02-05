@@ -18,7 +18,7 @@ export default async function DocumentPage(props: {
   const document = await getDocumentById(id, user?.id as string);
   if (!document) {
     return (
-      <div className="flex flex-1 items-center justify-center bg-gray-50 dark:bg-slate-950">
+      <div className="flex flex-1 items-center justify-center bg-background">
         <div className="text-center p-4 max-w-md">
           <div className="w-12 h-12 mx-auto mb-4 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
             <FileText className="w-6 h-6 text-red-600 dark:text-red-400" />

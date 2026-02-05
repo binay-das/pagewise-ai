@@ -73,18 +73,18 @@ export default function DocumentCard({ document }: { document: any }) {
 
   return (
     <Link href={`/documents/${document.id}`} className="block h-full group">
-      <Card className="h-full flex flex-col bg-white dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 shadow-sm hover:shadow-md transition-all duration-200 group-hover:-translate-y-0.5 overflow-hidden">
+      <Card className="h-full flex flex-col bg-card border border-neutral-200 dark:border-neutral-800 shadow-sm hover:border-neutral-300 dark:hover:border-neutral-700 transition-all duration-200 group-hover:-translate-y-0.5 overflow-hidden">
         <CardHeader className="p-4 pb-2">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
-              <CardTitle className="text-base font-semibold text-neutral-900 dark:text-neutral-50 truncate group-hover:text-neutral-600 dark:group-hover:text-neutral-300 transition-colors duration-200">
+              <CardTitle className="text-base font-medium text-neutral-900 dark:text-neutral-50 truncate group-hover:text-black dark:group-hover:text-white transition-colors duration-200">
                 {document.title || document.fileName}
               </CardTitle>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <Badge
                 variant="outline"
-                className={`text-[10px] px-1.5 py-0.5 font-medium border-neutral-200 dark:border-neutral-800 text-neutral-500 dark:text-neutral-400 bg-neutral-50 dark:bg-neutral-900`}
+                className="text-[10px] px-1.5 py-0.5 font-normal border-neutral-200 dark:border-neutral-800 text-neutral-500 dark:text-neutral-400 bg-transparent"
               >
                 {fileType.type}
               </Badge>
