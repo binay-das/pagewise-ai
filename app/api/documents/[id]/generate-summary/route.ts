@@ -22,12 +22,11 @@ export async function POST(
 
         const { id } = await context.params;
 
-        // Fetch the document and verify ownership
         const document = await prisma.pdfSummary.findUnique({
             where: {
                 id,
-                userId: user.id,
-            },
+                userId: user.id
+            }
         });
 
         if (!document) {
@@ -37,7 +36,6 @@ export async function POST(
             );
         }
 
-        // Check if summary already exists
         if (document.summaryText && document.summaryText.trim()) {
             return NextResponse.json(
                 { error: "Summary already exists" },
@@ -45,7 +43,6 @@ export async function POST(
             );
         }
 
-        // Get the extracted text
         const extractedText = document.extractedText;
 
         if (!extractedText || !extractedText.trim()) {
@@ -57,7 +54,6 @@ export async function POST(
 
         logger.info({ documentId: maskId(id) }, "Generating summary for document");
 
-        // Create the prompt for summary generation
         const prompt = `
         Transform the following document into an engaging, easy-to-read summary.
         - Use clear sections
@@ -68,12 +64,10 @@ export async function POST(
         ${extractedText}
         `;
 
-        // Stream the summary generation
         const ollamaStream = await streamOllamaChat([
             { role: "user", content: prompt }
         ]);
 
-        // We need to capture the streamed content to save it to the database
         let fullSummary = "";
         const encoder = new TextEncoder();
 
@@ -86,10 +80,9 @@ export async function POST(
                     while (true) {
                         const { done, value } = await reader.read();
                         if (done) {
-                            // Save the complete summary to the database
                             await prisma.pdfSummary.update({
                                 where: { id },
-                                data: { summaryText: fullSummary },
+                                data: { summaryText: fullSummary }
                             });
                             logger.info({ documentId: maskId(id) }, "Summary saved to database");
                             controller.close();
@@ -127,9 +120,9 @@ export async function POST(
 
         return new NextResponse(stream, {
             headers: {
-                "Content-Type": "text/event-stream",
-                "Cache-Control": "no-cache",
-                "Connection": "keep-alive",
+                "Content-Type": "text/plain; charset=utf-8",
+                "Cache-Control": "no-cache, no-transform",
+                "X-Content-Type-Options": "nosniff",
             },
         });
     } catch (error) {

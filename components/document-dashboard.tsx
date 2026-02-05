@@ -13,7 +13,6 @@ import {
     PanelLeftClose,
     PanelLeftOpen,
 } from "lucide-react";
-import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { Button } from "@/components/ui/button";
 import { SummaryTab } from "@/components/summary-tab";
 
@@ -30,13 +29,15 @@ interface DocumentDashboardProps {
 
 export function DocumentDashboard({ document }: DocumentDashboardProps) {
     const [isPdfVisible, setIsPdfVisible] = useState(true);
+    const [summary, setSummary] = useState(document.summaryText || "");
+    const [isGenerating, setIsGenerating] = useState(false);
 
     return (
         <div className="flex flex-col h-full bg-background">
             <div className="flex items-center justify-between px-4 py-2 border-b bg-card">
                 <div className="flex items-center space-x-4">
                     <Link
-                        href="/documents"
+                        href="documents"
                         className="inline-flex items-center space-x-1 text-muted-foreground hover:text-foreground transition-colors"
                     >
                         <ArrowLeft className="w-4 h-4" />
@@ -141,7 +142,15 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
                             value="summary"
                             className="flex-1 p-0 m-0 data-[state=inactive]:hidden overflow-hidden"
                         >
-                            <SummaryTab documentId={document.id} initialSummary={document.summaryText} extractedText={document.extractedText} />
+                            <SummaryTab
+                                documentId={document.id}
+                                initialSummary={document.summaryText}
+                                extractedText={document.extractedText}
+                                summary={summary}
+                                setSummary={setSummary}
+                                isGenerating={isGenerating}
+                                setIsGenerating={setIsGenerating}
+                            />
                         </TabsContent>
 
                         <TabsContent

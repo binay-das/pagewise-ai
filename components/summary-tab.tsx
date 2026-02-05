@@ -9,11 +9,21 @@ interface SummaryTabProps {
     documentId: string;
     initialSummary: string | null;
     extractedText: string | null;
+    summary: string;
+    setSummary: (summary: string) => void;
+    isGenerating: boolean;
+    setIsGenerating: (generating: boolean) => void;
 }
 
-export function SummaryTab({ documentId, initialSummary, extractedText }: SummaryTabProps) {
-    const [summary, setSummary] = useState(initialSummary || "");
-    const [isGenerating, setIsGenerating] = useState(false);
+export function SummaryTab({
+    documentId,
+    initialSummary,
+    extractedText,
+    summary,
+    setSummary,
+    isGenerating,
+    setIsGenerating
+}: SummaryTabProps) {
     const [error, setError] = useState<string | null>(null);
 
     const hasSummary = summary && summary.trim().length > 0;
