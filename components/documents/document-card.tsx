@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import {
   Card,
   CardContent,
@@ -73,63 +74,72 @@ export default function DocumentCard({ document }: { document: any }) {
 
   return (
     <Link href={`/documents/${document.id}`} className="block h-full group">
-      <Card className="h-full flex flex-col bg-card border border-neutral-200 dark:border-neutral-800 shadow-sm hover:border-neutral-300 dark:hover:border-neutral-700 transition-all duration-200 group-hover:-translate-y-0.5 overflow-hidden">
-        <CardHeader className="p-4 pb-2">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex-1 min-w-0">
-              <CardTitle className="text-base font-medium text-neutral-900 dark:text-neutral-50 truncate group-hover:text-black dark:group-hover:text-white transition-colors duration-200">
-                {document.title || document.fileName}
-              </CardTitle>
-            </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <Badge
-                variant="outline"
-                className="text-[10px] px-1.5 py-0.5 font-normal border-neutral-200 dark:border-neutral-800 text-neutral-500 dark:text-neutral-400 bg-transparent"
-              >
-                {fileType.type}
-              </Badge>
-            </div>
-          </div>
-        </CardHeader>
-
-        <CardContent className="flex-grow p-4 pt-2">
-          <div className="space-y-3">
-            <div className="relative h-16">
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed line-clamp-3">
-                {document.summaryText
-                  ? truncateText(document.summaryText, 120)
-                  : "No summary available for this document."}
-              </p>
-            </div>
-
-            {wordCount > 0 && (
-              <div className="flex items-center gap-3 text-[10px] text-neutral-400 dark:text-neutral-500 font-medium">
-                <div className="flex items-center gap-1">
-                  <Layers className="h-3 w-3" />
-                  <span>{wordCount.toLocaleString()} words</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  <span>{readingTime} min read</span>
-                </div>
+      <motion.div
+        whileHover={{ y: -4, transition: { duration: 0.2 } }}
+        whileTap={{ scale: 0.98 }}
+      >
+        <Card className="h-full flex flex-col bg-card border border-neutral-200 dark:border-neutral-800 shadow-sm hover:border-neutral-300 dark:hover:border-neutral-700 hover:shadow-md transition-all duration-200 overflow-hidden">
+          <CardHeader className="p-4 pb-2">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <CardTitle className="text-base font-medium text-neutral-900 dark:text-neutral-50 truncate group-hover:text-black dark:group-hover:text-white transition-colors duration-200">
+                  {document.title || document.fileName}
+                </CardTitle>
               </div>
-            )}
-          </div>
-        </CardContent>
-
-        <CardFooter className="p-4 pt-0 border-t-0">
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-1.5 text-[10px] text-neutral-400 dark:text-neutral-500 font-medium">
-              <Calendar className="h-3 w-3" />
-              <span>{getRelativeTime(createdDate)}</span>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <Badge
+                  variant="outline"
+                  className="text-[10px] px-1.5 py-0.5 font-normal border-neutral-200 dark:border-neutral-800 text-neutral-500 dark:text-neutral-400 bg-transparent"
+                >
+                  {fileType.type}
+                </Badge>
+              </div>
             </div>
+          </CardHeader>
 
-            <div className="flex items-center text-neutral-900 dark:text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <ExternalLink className="h-3 w-3" />
+          <CardContent className="flex-grow p-4 pt-2">
+            <div className="space-y-3">
+              <div className="relative h-16">
+                <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed line-clamp-3">
+                  {document.summaryText
+                    ? truncateText(document.summaryText, 120)
+                    : "No summary available for this document."}
+                </p>
+              </div>
+
+              {wordCount > 0 && (
+                <div className="flex items-center gap-3 text-[10px] text-neutral-400 dark:text-neutral-500 font-medium">
+                  <div className="flex items-center gap-1">
+                    <Layers className="h-3 w-3" />
+                    <span>{wordCount.toLocaleString()} words</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    <span>{readingTime} min read</span>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-        </CardFooter>
-      </Card>
+          </CardContent>
+
+          <CardFooter className="p-4 pt-0 border-t-0">
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center gap-1.5 text-[10px] text-neutral-400 dark:text-neutral-500 font-medium">
+                <Calendar className="h-3 w-3" />
+                <span>{getRelativeTime(createdDate)}</span>
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, x: -5 }}
+                whileHover={{ opacity: 1, x: 0 }}
+                className="flex items-center text-neutral-900 dark:text-white"
+              >
+                <ExternalLink className="h-3 w-3" />
+              </motion.div>
+            </div>
+          </CardFooter>
+        </Card>
+      </motion.div>
     </Link>
   );
 }

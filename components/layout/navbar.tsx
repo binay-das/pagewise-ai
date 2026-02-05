@@ -30,8 +30,8 @@ export function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-neutral-200 dark:border-neutral-800 bg-white/80 backdrop-blur-md dark:bg-neutral-950/80">
-      <div className="max-w-7xl mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md dark:bg-neutral-950/80">
+      <div className="max-w-7xl mx-auto flex h-16 border-b border-neutral-200 dark:border-neutral-800 items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link
           href={session ? "/documents" : "/"}
           className="flex items-center space-x-3 group"
