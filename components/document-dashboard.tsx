@@ -34,12 +34,12 @@ type Message = {
 };
 
 export function DocumentDashboard({ document }: DocumentDashboardProps) {
-    const [isPdfVisible, setIsPdfVisible] = useState(true);
-    const [summary, setSummary] = useState(document.summaryText || "");
-    const [isGenerating, setIsGenerating] = useState(false);
+    const [isPdfVisible, setIsPdfVisible] = useState<boolean>(true);
+    const [summary, setSummary] = useState<string>(document.summaryText || "");
+    const [isGenerating, setIsGenerating] = useState<boolean>(false);
     const [messages, setMessages] = useState<Message[]>([]);
-    const [isMessagesLoaded, setIsMessagesLoaded] = useState(false);
-    const [isChatLoading, setIsChatLoading] = useState(false);
+    const [isMessagesLoaded, setIsMessagesLoaded] = useState<boolean>(false);
+    const [isChatLoading, setIsChatLoading] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchChatHistory = async () => {
@@ -63,19 +63,19 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
 
     return (
         <div className="flex flex-col w-full bg-background overflow-hidden" style={{ height: "calc(100vh - 65px)" }}>
-            <div className="flex items-center justify-between px-4 py-2 border-b bg-card">
+            <div className="flex items-center justify-between px-6 py-3 border-b bg-card/50 backdrop-blur-sm">
                 <div className="flex items-center space-x-4">
                     <Link
-                        href="documents"
-                        className="inline-flex items-center space-x-1 text-muted-foreground hover:text-foreground transition-colors"
+                        href="/documents"
+                        className="inline-flex items-center justify-center w-8 h-8 rounded-lg hover:bg-muted transition-colors group"
                     >
-                        <ArrowLeft className="w-4 h-4" />
+                        <ArrowLeft className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
                     </Link>
-                    <div className="flex items-center space-x-2">
-                        <div className="p-1.5 bg-primary/10 rounded-md">
+                    <div className="flex items-center space-x-3">
+                        <div className="p-2 bg-primary/10 rounded-xl">
                             <FileText className="w-4 h-4 text-primary" />
                         </div>
-                        <span className="font-medium text-sm truncate max-w-[300px]">
+                        <span className="font-semibold text-sm truncate max-w-[300px]">
                             {document.title || document.fileName || "Untitled Document"}
                         </span>
                     </div>
@@ -86,19 +86,19 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
                         variant="ghost"
                         size="sm"
                         onClick={() => setIsPdfVisible(!isPdfVisible)}
-                        className="text-muted-foreground hover:text-foreground gap-2"
+                        className="text-muted-foreground hover:text-foreground gap-2 rounded-lg px-3"
                     >
                         {isPdfVisible ? (
                             <>
                                 <PanelLeftClose className="w-4 h-4" />
-                                <span className="text-xs hidden lg:inline">Hide PDF</span>
-                                <span className="text-xs lg:hidden">Switch to Assistant</span>
+                                <span className="text-xs font-medium hidden lg:inline">Hide PDF</span>
+                                <span className="text-xs font-medium lg:hidden">Switch to Assistant</span>
                             </>
                         ) : (
                             <>
                                 <PanelLeftOpen className="w-4 h-4" />
-                                <span className="text-xs hidden lg:inline">Show PDF</span>
-                                <span className="text-xs lg:hidden">Switch to PDF</span>
+                                <span className="text-xs font-medium hidden lg:inline">Show PDF</span>
+                                <span className="text-xs font-medium lg:hidden">Switch to PDF</span>
                             </>
                         )}
                     </Button>
@@ -114,7 +114,7 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
                             ? "h-full w-full lg:h-full lg:w-1/2 opacity-100"
                             : "h-0 w-full lg:h-full lg:w-0 opacity-0 lg:border-none"
                         }
-                        border-b lg:border-b-0 lg:border-r border-neutral-200 dark:border-neutral-800
+                        border-b lg:border-b-0 lg:border-r
                     `}
                 >
                     <iframe
@@ -134,24 +134,24 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
                     `}
                 >
                     <Tabs defaultValue="chat" className="flex-1 flex flex-col h-full overflow-hidden">
-                        <TabsList className="grid w-full grid-cols-3 rounded-none bg-background p-0 h-10 flex-shrink-0 border-b border-neutral-200 dark:border-neutral-800">
+                        <TabsList className="grid w-full grid-cols-3 rounded-none bg-muted/30 p-1 h-12 flex-shrink-0 border-b">
                             <TabsTrigger
                                 value="chat"
-                                className="flex items-center justify-center space-x-2 rounded-none data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-neutral-900 dark:data-[state=active]:border-white transition-all text-sm py-2 h-full"
+                                className="flex items-center justify-center gap-2 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all text-sm py-2.5 h-full font-medium"
                             >
                                 <MessageSquare className="w-4 h-4" />
                                 <span className="hidden sm:inline">Chat</span>
                             </TabsTrigger>
                             <TabsTrigger
                                 value="summary"
-                                className="flex items-center justify-center space-x-2 rounded-none data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-neutral-900 dark:data-[state=active]:border-white transition-all text-sm py-2 h-full"
+                                className="flex items-center justify-center gap-2 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all text-sm py-2.5 h-full font-medium"
                             >
                                 <Brain className="w-4 h-4" />
                                 <span className="hidden sm:inline">Summary</span>
                             </TabsTrigger>
                             <TabsTrigger
                                 value="extracted"
-                                className="flex items-center justify-center space-x-2 rounded-none data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-neutral-900 dark:data-[state=active]:border-white transition-all text-sm py-2 h-full"
+                                className="flex items-center justify-center gap-2 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all text-sm py-2.5 h-full font-medium"
                             >
                                 <FileCheck className="w-4 h-4" />
                                 <span className="hidden sm:inline">Extracted Info</span>
@@ -187,8 +187,8 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
                             className="flex-1 p-0 m-0 data-[state=inactive]:hidden overflow-hidden"
                         >
                             <div className="h-full flex flex-col overflow-y-auto">
-                                <div className="p-4">
-                                    <div className="bg-muted/30 rounded-lg p-4 border font-mono text-xs leading-relaxed whitespace-pre-wrap">
+                                <div className="p-6">
+                                    <div className="bg-muted/40 rounded-xl p-5 border font-mono text-xs leading-relaxed whitespace-pre-wrap">
                                         {document.extractedText}
                                     </div>
                                 </div>
