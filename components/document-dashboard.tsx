@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { Button } from "@/components/ui/button";
+import { SummaryTab } from "@/components/summary-tab";
 
 interface DocumentDashboardProps {
     document: {
@@ -140,22 +141,7 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
                             value="summary"
                             className="flex-1 p-0 m-0 data-[state=inactive]:hidden overflow-hidden"
                         >
-                            <div className="h-full flex flex-col overflow-y-auto">
-                                <div className="p-4 md:p-6 max-w-3xl mx-auto w-full">
-                                    <div className="flex items-center gap-3 mb-6 pb-4 border-b">
-                                        <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                                            <Brain className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                                        </div>
-                                        <div>
-                                            <h3 className="font-semibold text-lg">Thinking Summary</h3>
-                                            <p className="text-sm text-muted-foreground">AI-generated insights</p>
-                                        </div>
-                                    </div>
-                                    <div className="prose prose-sm dark:prose-invert max-w-none">
-                                        <MarkdownRenderer content={document.summaryText || ""} />
-                                    </div>
-                                </div>
-                            </div>
+                            <SummaryTab documentId={document.id} initialSummary={document.summaryText} extractedText={document.extractedText} />
                         </TabsContent>
 
                         <TabsContent
