@@ -30,8 +30,7 @@ const embeddings = new OllamaEmbeddings();
 
 export async function askQuestionAction(
   messages: CoreMessage[],
-  documentId: string,
-  userMessageId: string
+  documentId: string
 ) {
   const lastUserMessage = messages[messages.length - 1];
   const question = lastUserMessage.content as string;

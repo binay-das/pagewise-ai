@@ -1,7 +1,14 @@
 import { applicationConfig } from "@/lib/config";
 import { logger } from "@/lib/logger";
+import pLimit from "p-limit";
 
 export const llmBaseUrl = applicationConfig.ai.baseUrl;
+const EMBEDDING_CONCURRENCY = 5;
+const SUMMARY_CONCURRENCY = 3;
+
+const embeddingLimit = pLimit(EMBEDDING_CONCURRENCY);
+const summaryLimit = pLimit(SUMMARY_CONCURRENCY);
+
 
 export async function generateOllamaText(prompt: string, model: string = applicationConfig.ai.textModel) {
     logger.info({ model }, "Generating text with Ollama");
@@ -48,8 +55,13 @@ export interface EmbeddingsInterface {
 
 export class OllamaEmbeddings implements EmbeddingsInterface {
     async embedDocuments(texts: string[]): Promise<number[][]> {
-        return Promise.all(texts.map((text) => generateOllamaEmbeddings(text)));
+        return Promise.all(
+            texts.map(text =>
+                embeddingLimit(() => generateOllamaEmbeddings(text))
+            )
+        );
     }
+
     async embedQuery(text: string): Promise<number[]> {
         return generateOllamaEmbeddings(text);
     }
@@ -157,7 +169,9 @@ export async function generateSafeSummary(fullExtractedText: string) {
 
     const partialSummaries = await Promise.all(
         chunks.map(chunk =>
-            generateOllamaText(`Extract key points...\n${chunk}`)
+            summaryLimit(() =>
+                generateOllamaText(`Extract key points:\n${chunk}`)
+            )
         )
     );
 

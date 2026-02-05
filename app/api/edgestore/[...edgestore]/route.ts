@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 // import { initEdgeStore } from '@edgestore/server';
 // import { createEdgeStoreNextHandler } from '@edgestore/server/adapters/next/app';
 
@@ -23,3 +25,5 @@
 //  * This type is used to create the type-safe client for the frontend.
 //  */
 // export type EdgeStoreRouter = typeof edgeStoreRouter;
+
+export { };
