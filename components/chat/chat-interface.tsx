@@ -12,28 +12,16 @@ type Message = {
   content: string;
 };
 
-export const ChatInterface = ({ documentId }: { documentId: string }) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+interface ChatInterfaceProps {
+  documentId: string;
+  messages: Message[];
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+}
+
+export const ChatInterface = ({ documentId, messages, setMessages }: ChatInterfaceProps) => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const fetchChatHistory = async () => {
-      try {
-        const response = await fetch(`/api/chat/${documentId}`);
-        if (response.ok) {
-          const data = await response.json();
-          setMessages(data.messages || []);
-        }
-      } catch (error) {
-        const { maskId } = await import("@/lib/logger");
-        logger.error({ error, documentId: maskId(documentId) }, "Error fetching chat history");
-      }
-    };
-
-    fetchChatHistory();
-  }, [documentId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChatInterface } from "@/components/chat/chat-interface";
@@ -27,10 +27,38 @@ interface DocumentDashboardProps {
     };
 }
 
+type Message = {
+    id: string;
+    role: "user" | "assistant";
+    content: string;
+};
+
 export function DocumentDashboard({ document }: DocumentDashboardProps) {
     const [isPdfVisible, setIsPdfVisible] = useState(true);
     const [summary, setSummary] = useState(document.summaryText || "");
     const [isGenerating, setIsGenerating] = useState(false);
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [isMessagesLoaded, setIsMessagesLoaded] = useState(false);
+
+    useEffect(() => {
+        const fetchChatHistory = async () => {
+            try {
+                const response = await fetch(`/api/chat/${document.id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setMessages(data.messages || []);
+                }
+            } catch (error) {
+                console.error("Error fetching chat history:", error);
+            } finally {
+                setIsMessagesLoaded(true);
+            }
+        };
+
+        if (!isMessagesLoaded) {
+            fetchChatHistory();
+        }
+    }, [document.id, isMessagesLoaded]);
 
     return (
         <div className="flex flex-col h-full bg-background">
@@ -134,7 +162,7 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
                             className="flex-1 p-0 m-0 data-[state=inactive]:hidden overflow-hidden relative"
                         >
                             <div className="absolute inset-0 flex flex-col">
-                                <ChatInterface documentId={document.id} />
+                                <ChatInterface documentId={document.id} messages={messages} setMessages={setMessages} />
                             </div>
                         </TabsContent>
 
