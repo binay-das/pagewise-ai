@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState, useEffect } from "react";
 import { ChatInterface } from "@/components/chat/chat-interface";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
     ArrowLeft,
     FileText,
@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SummaryTab } from "@/components/summary-tab";
+import { CopyButton } from "@/components/chat/copy-button";
 
 interface DocumentDashboardProps {
     document: {
@@ -188,6 +189,10 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
                         >
                             <div className="h-full flex flex-col overflow-y-auto">
                                 <div className="p-6">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h3 className="font-semibold text-base">Extracted Text</h3>
+                                        <CopyButton text={document.extractedText || ""} className="p-2" />
+                                    </div>
                                     <div className="bg-muted/40 rounded-xl p-5 border font-mono text-xs leading-relaxed whitespace-pre-wrap">
                                         {document.extractedText}
                                     </div>

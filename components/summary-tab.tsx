@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Brain, Loader2, Sparkles } from "lucide-react";
+import { CopyButton } from "@/components/chat/copy-button";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 
 interface SummaryTabProps {
@@ -75,14 +76,19 @@ export function SummaryTab({
     return (
         <div className="h-full flex flex-col overflow-y-auto">
             <div className="p-4 md:p-6 max-w-3xl mx-auto w-full">
-                <div className="flex items-center gap-3 mb-6 pb-4 border-b">
-                    <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                        <Brain className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                <div className="flex items-center justify-between mb-6 pb-4 border-b">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                            <Brain className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-lg">Thinking Summary</h3>
+                            <p className="text-sm text-muted-foreground">AI-generated insights</p>
+                        </div>
                     </div>
-                    <div>
-                        <h3 className="font-semibold text-lg">Thinking Summary</h3>
-                        <p className="text-sm text-muted-foreground">AI-generated insights</p>
-                    </div>
+                    {hasSummary && !isGenerating && (
+                        <CopyButton text={summary} className="p-2" />
+                    )}
                 </div>
 
                 {!hasSummary && !isGenerating && (
