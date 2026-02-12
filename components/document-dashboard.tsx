@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { SummaryTab } from "@/components/summary-tab";
 import { CopyButton } from "@/components/chat/copy-button";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 interface DocumentDashboardProps {
     document: {
@@ -164,7 +165,9 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
                             className="flex-1 p-0 m-0 data-[state=inactive]:hidden overflow-hidden relative"
                         >
                             <div className="absolute inset-0 flex flex-col">
-                                <ChatInterface documentId={document.id} messages={messages} setMessages={setMessages} isLoading={isChatLoading} setIsLoading={setIsChatLoading} />
+                                <ErrorBoundary>
+                                    <ChatInterface documentId={document.id} messages={messages} setMessages={setMessages} isLoading={isChatLoading} setIsLoading={setIsChatLoading} />
+                                </ErrorBoundary>
                             </div>
                         </TabsContent>
 

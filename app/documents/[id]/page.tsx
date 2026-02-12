@@ -20,3 +20,4 @@ export default async function DocumentPage(props: {
     <DocumentDashboard document={document} />
   );
 }
+
