@@ -3,6 +3,7 @@
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import { prisma } from "@/lib/prisma";
+import { Result } from "@/lib/types/result";
 import { logger, maskEmail } from "@/lib/logger";
 
 const SignUpSchema = z.object({
@@ -10,11 +11,17 @@ const SignUpSchema = z.object({
   password: z.string().min(6, { message: "Password must be at least 6 characters long." }),
 });
 
-export async function signUpAction(values: z.infer<typeof SignUpSchema>) {
+type SignUpData = {
+  id: string;
+  email: string;
+  createdAt: Date;
+};
+
+export async function signUpAction(values: z.infer<typeof SignUpSchema>): Promise<Result<SignUpData>> {
   const validatedFields = SignUpSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    return { error: "Invalid fields provided." };
+    return { success: false, error: "Invalid fields provided." };
   }
 
   const { email, password } = validatedFields.data;
@@ -25,7 +32,7 @@ export async function signUpAction(values: z.infer<typeof SignUpSchema>) {
     });
 
     if (existingUser) {
-      return { error: "User with this email already exists." };
+      return { success: false, error: "User with this email already exists." };
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -41,10 +48,10 @@ export async function signUpAction(values: z.infer<typeof SignUpSchema>) {
       },
     });
 
-    return { success: "User created successfully!", user };
+    return { success: true, data: user };
 
   } catch (error) {
     logger.error({ error, email: maskEmail(email) }, "Signup action error");
-    return { error: "An unexpected error occurred." };
+    return { success: false, error: "An unexpected error occurred." };
   }
 }

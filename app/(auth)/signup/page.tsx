@@ -23,13 +23,11 @@ export default function SignUpPage() {
 
     const result = await signUpAction({ email, password });
 
-    if (result.error) {
+    if (!result.success) {
       toast.error(result.error);
       setIsLoading(false);
-    }
-
-    if (result.success) {
-      toast.success(result.success);
+    } else {
+      toast.success("Account created successfully!");
       setTimeout(() => router.push("/signin"), 500);
     }
   };

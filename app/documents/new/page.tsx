@@ -10,8 +10,6 @@ import { generateSummary, storePdfSummaryAction } from "@/app/actions/upload-act
 import {
   Upload,
   FileText,
-  CheckCircle,
-  AlertCircle,
   Loader2
 } from "lucide-react";
 import { logger } from "@/lib/logger";
@@ -53,16 +51,14 @@ export default function NewDocument() {
       const { key, url } = res;
 
       toast.info("Processing with AI...");
-      // const summaryRes = await generateSummary(res.url);
       const summaryRes = await generateSummary(key);
 
-      if (!summaryRes.success || !summaryRes.data) {
-        throw new Error("Failed to extract text.");
+      if (!summaryRes.success) {
+        throw new Error(summaryRes.error);
       }
 
       toast.info("Saving...");
       const saved = await storePdfSummaryAction({
-        // fileUrl: res.url,
         fileUrl: url,
         summary: summaryRes.data.summary,
         extractedText: summaryRes.data.pdfText,
@@ -70,17 +66,15 @@ export default function NewDocument() {
         fileName: file.name,
       });
 
-      // if (!saved.success || !saved.data) {
-      //   throw new Error(saved.message || "Failed to save document");
-      // }
+      if (!saved.success) {
+        throw new Error(saved.error);
+      }
 
       toast.success("Processing complete!");
 
-      if (saved.success && saved.data) {
-        setTimeout(() => {
-          router.push(`/documents/${saved.data.id}`);
-        }, 1500);
-      }
+      setTimeout(() => {
+        router.push(`/documents/${saved.data.id}`);
+      }, 1000);
 
     } catch (error) {
       logger.error({ error }, "Upload error");

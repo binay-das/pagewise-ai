@@ -9,14 +9,19 @@ import { extractTextFromPdf } from "@/lib/langchain";
 import { readPdfFromStorage } from "@/lib/object-storage.read";
 import { processAndEmbedDocument } from "@/app/actions/embed-actions";
 import { logger, maskId } from "@/lib/logger";
+import { Result } from "@/lib/types/result";
 
 
-export async function generateSummary(fileKey: string) {
+type SummaryData = {
+    summary: string | null;
+    pdfText: string;
+};
+
+export async function generateSummary(fileKey: string): Promise<Result<SummaryData>> {
     if (!fileKey) {
         return {
             success: false,
-            message: "File upload failed or response is invalid",
-            data: null,
+            error: "File upload failed or response is invalid",
         };
     }
 
@@ -31,7 +36,6 @@ export async function generateSummary(fileKey: string) {
 
         return {
             success: true,
-            message: "Text extracted successfully",
             data: { summary, pdfText },
         };
 
@@ -39,12 +43,23 @@ export async function generateSummary(fileKey: string) {
         logger.error({ error }, "Error extracting text from PDF");
         return {
             success: false,
-            message: "Failed to extract text from PDF",
-            data: null,
+            error: "Failed to extract text from PDF",
         };
     }
 }
 
+
+type PdfSummary = {
+    id: string;
+    userId: string;
+    originalFileUrl: string;
+    summaryText: string;
+    title: string | null;
+    fileName: string | null;
+    extractedText: string;
+    createdAt: Date;
+    updatedAt: Date;
+};
 
 export async function storePdfSummaryAction({
     fileUrl,
@@ -58,14 +73,14 @@ export async function storePdfSummaryAction({
     title: string;
     fileName: string;
     extractedText: string;
-}) {
+}): Promise<Result<PdfSummary>> {
     try {
         const session = await getServerSession(authOptions);
         const user = session?.user;
         if (!user || !user.id) {
             return {
                 success: false,
-                message: "User not found",
+                error: "User not found",
             };
         }
 
@@ -86,14 +101,13 @@ export async function storePdfSummaryAction({
 
         return {
             success: true,
-            message: "Summary saved successfully and embedding process started",
             data: savedPdfSummary,
         };
     } catch (error) {
         logger.error({ error }, "Error storing PDF summary in database");
         return {
             success: false,
-            message: "Failed to store summary in db",
+            error: "Failed to store summary in database",
         };
     }
 }
