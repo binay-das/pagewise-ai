@@ -4,6 +4,7 @@ import { SendHorizontal } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { CopyButton } from "./copy-button";
+import { ExportChatButton } from "./export-chat-button";
 import { TypingIndicator } from "./typing-indicator";
 import { logger } from "@/lib/logger";
 
@@ -15,13 +16,14 @@ type Message = {
 
 interface ChatInterfaceProps {
   documentId: string;
+  documentTitle?: string;
   messages: Message[];
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const ChatInterface = ({ documentId, messages, setMessages, isLoading, setIsLoading }: ChatInterfaceProps) => {
+export const ChatInterface = ({ documentId, documentTitle, messages, setMessages, isLoading, setIsLoading }: ChatInterfaceProps) => {
   const [input, setInput] = useState("");
   const [isWaitingForFirstToken, setIsWaitingForFirstToken] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -115,36 +117,44 @@ export const ChatInterface = ({ documentId, messages, setMessages, isLoading, se
 
   return (
     <div className="flex flex-col h-full bg-gray-50 dark:bg-black transition-colors">
-      <div className="flex-1 p-3 overflow-y-auto space-y-2 text-sm">
-        {messages.map((m) => (
+      {messages.length > 0 && (
+        <div className="flex items-center justify-end px-3 py-2 border-b border-gray-200 dark:border-gray-800">
+          <ExportChatButton
+            messages={messages}
+            documentTitle={documentTitle || "Untitled Document"}
+          />
+        </div>
+      )}
+
+      <div className="flex-1 p-3 overflow-y-auto space-y-2 text-sm">{messages.map((m) => (
+        <div
+          key={m.id}
+          className={`group relative max-w-[75%] w-fit ${m.role === "user" ? "ml-auto" : ""
+            }`}
+        >
           <div
-            key={m.id}
-            className={`group relative max-w-[75%] w-fit ${m.role === "user" ? "ml-auto" : ""
+            className={`p-2 rounded-2xl shadow-sm transition-colors whitespace-pre-wrap text-sm ${m.role === "user"
+              ? "bg-blue-500 text-white rounded-br-none"
+              : "bg-white text-gray-800 dark:bg-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700 rounded-bl-none"
               }`}
           >
-            <div
-              className={`p-2 rounded-2xl shadow-sm transition-colors whitespace-pre-wrap text-sm ${m.role === "user"
-                ? "bg-blue-500 text-white rounded-br-none"
-                : "bg-white text-gray-800 dark:bg-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700 rounded-bl-none"
-                }`}
-            >
-              {m.role === "assistant" ? (
-                <>
-                  {m.content && <MarkdownRenderer content={m.content} />}
-                </>
-              ) : (
-                m.content
-              )}
+            {m.role === "assistant" ? (
+              <>
+                {m.content && <MarkdownRenderer content={m.content} />}
+              </>
+            ) : (
+              m.content
+            )}
 
-            </div>
-            <div
-              className={`absolute top-1 opacity-0 group-hover:opacity-100 transition-opacity ${m.role === "user" ? "-left-8" : "-right-8"
-                }`}
-            >
-              <CopyButton text={m.content} />
-            </div>
           </div>
-        ))}
+          <div
+            className={`absolute top-1 opacity-0 group-hover:opacity-100 transition-opacity ${m.role === "user" ? "-left-8" : "-right-8"
+              }`}
+          >
+            <CopyButton text={m.content} />
+          </div>
+        </div>
+      ))}
 
         {isWaitingForFirstToken && (
           <div className="group relative max-w-[75%] w-fit">
