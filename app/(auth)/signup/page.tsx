@@ -1,15 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
-import { signUpAction } from "@/app/actions/auth-action";
-import { Button } from "@/components/ui/button";
+import { UI_CONFIG } from "@/lib/config";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { signUpAction } from "@/app/actions/auth-action";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -28,7 +29,7 @@ export default function SignUpPage() {
       setIsLoading(false);
     } else {
       toast.success("Account created successfully!");
-      setTimeout(() => router.push("/signin"), 500);
+      setTimeout(() => router.push("/signin"), UI_CONFIG.REDIRECT_DELAY);
     }
   };
 

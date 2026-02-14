@@ -13,6 +13,7 @@ import {
   Loader2
 } from "lucide-react";
 import { logger } from "@/lib/logger";
+import { UI_CONFIG } from "@/lib/config";
 import { toast } from "sonner";
 
 export default function NewDocument() {
@@ -74,7 +75,7 @@ export default function NewDocument() {
 
       setTimeout(() => {
         router.push(`/documents/${saved.data.id}`);
-      }, 1000);
+      }, UI_CONFIG.REDIRECT_DELAY_LONG);
 
     } catch (error) {
       logger.error({ error }, "Upload error");

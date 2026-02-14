@@ -1,6 +1,7 @@
-import { applicationConfig } from "@/lib/config";
-import { logger } from "@/lib/logger";
 import pLimit from "p-limit";
+import { logger } from "@/lib/logger";
+import { AI_CONFIG } from "@/lib/config";
+import { applicationConfig } from "@/lib/config";
 
 export const llmBaseUrl = applicationConfig.ai.baseUrl;
 const EMBEDDING_CONCURRENCY = 5;
@@ -160,7 +161,7 @@ export async function createOllamaStream(stream: ReadableStream) {
 
 
 export async function generateSafeSummary(fullExtractedText: string) {
-    const chunkSize = 2000;
+    const chunkSize = AI_CONFIG.CHUNK_SIZE;
     const chunks = [];
 
     for (let i = 0; i < fullExtractedText.length; i += chunkSize) {

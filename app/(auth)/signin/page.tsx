@@ -7,6 +7,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
+import { UI_CONFIG } from "@/lib/config";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,8 +32,8 @@ export default function SignInPage() {
       toast.error("Invalid email or password. Please try again.");
       setIsLoading(false);
     } else if (result?.ok) {
-      toast.success("Successfully signed in!");
-      setTimeout(() => router.push("/documents"), 500);
+      toast.success("Signed in successfully!");
+      setTimeout(() => router.push("/documents"), UI_CONFIG.REDIRECT_DELAY);
     }
   };
 

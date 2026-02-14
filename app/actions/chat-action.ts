@@ -10,6 +10,7 @@ import { PrismaVectorStore } from "@langchain/community/vectorstores/prisma";
 import { Prisma } from "@prisma/client";
 import type { DocumentChunk as PrismaDocumentChunk } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { AI_CONFIG } from "@/lib/config";
 
 
 // const google = createGoogleGenerativeAI({
@@ -61,7 +62,7 @@ export async function askQuestionAction(
     }
   );
 
-  const relevantDocs = await vectorStore.similaritySearch(question, 4, {
+  const relevantDocs = await vectorStore.similaritySearch(question, AI_CONFIG.SIMILARITY_SEARCH_LIMIT, {
     pdfSummaryId: { equals: documentId }
   });
 

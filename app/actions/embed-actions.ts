@@ -8,6 +8,7 @@ import { Prisma } from "@prisma/client";
 import type { DocumentChunk as PrismaDocumentChunk } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { logger } from "@/lib/logger";
+import { AI_CONFIG } from "@/lib/config";
 
 export async function processAndEmbedDocument(pdfSummaryId: string) {
   try {
@@ -20,7 +21,7 @@ export async function processAndEmbedDocument(pdfSummaryId: string) {
     await prisma.documentChunk.deleteMany({ where: { pdfSummaryId } });
 
     const splitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 1000,
+      chunkSize: AI_CONFIG.EMBEDDING_CHUNK_SIZE,
       chunkOverlap: 100,
     });
 
