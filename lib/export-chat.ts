@@ -86,7 +86,7 @@ export function exportAsPDF(messages: Message[], documentTitle: string) {
         doc.setFont('helvetica', 'bold');
         const role = message.role === 'user' ? 'User' : 'Assistant';
         const roleColor = message.role === 'user' ? [59, 130, 246] : [139, 92, 246];
-        doc.setTextColor(...roleColor);
+        doc.setTextColor(roleColor[0], roleColor[1], roleColor[2]);
         doc.text(role, margin, yPosition);
         yPosition += 7;
 
