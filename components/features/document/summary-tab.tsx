@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Brain, Loader2, Sparkles } from "lucide-react";
-import { CopyButton } from "@/components/chat/copy-button";
-import { MarkdownRenderer } from "@/components/MarkdownRenderer";
+import { CopyButton } from "@/components/features/chat";
+import { MarkdownRenderer } from "@/components/shared";
 
 interface SummaryTabProps {
     documentId: string;

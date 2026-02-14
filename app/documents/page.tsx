@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, FileText } from "lucide-react";
-import DocumentCard from "@/components/documents/document-card";
+import { DocumentCard } from "@/components/features/document";
 
 const container = {
   hidden: { opacity: 0 },

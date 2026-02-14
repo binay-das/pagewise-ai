@@ -2,7 +2,7 @@
 
 import { SendHorizontal } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { MarkdownRenderer } from "@/components/MarkdownRenderer";
+import { MarkdownRenderer } from "@/components/shared";
 import { CopyButton } from "./copy-button";
 import { ExportChatButton } from "./export-chat-button";
 import { TypingIndicator } from "./typing-indicator";

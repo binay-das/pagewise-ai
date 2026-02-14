@@ -1,8 +1,7 @@
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { getDocumentById } from "@/lib/document";
-import { DocumentDashboard } from "@/components/document-dashboard";
-import { DocumentNotFound } from "@/components/document-not-found";
+import { DocumentDashboard, DocumentNotFound } from "@/components/features/document";
 
 export default async function DocumentPage(props: {
   params: Promise<{ id: string }>;

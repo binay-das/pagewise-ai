@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { ChatInterface } from "@/components/chat/chat-interface";
+import { ChatInterface } from "@/components/features/chat";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
     ArrowLeft,
@@ -14,9 +14,9 @@ import {
     PanelLeftOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SummaryTab } from "@/components/summary-tab";
-import { CopyButton } from "@/components/chat/copy-button";
-import { ErrorBoundary } from "@/components/error-boundary";
+import { SummaryTab } from "./summary-tab";
+import { CopyButton } from "@/components/features/chat";
+import { ErrorBoundary } from "@/components/shared";
 
 interface DocumentDashboardProps {
     document: {
