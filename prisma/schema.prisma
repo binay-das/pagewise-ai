@@ -7,9 +7,9 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
+  id       String @id @default(cuid())
+  email    String @unique
+  password String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -18,15 +18,16 @@ model User {
 }
 
 model PdfSummary {
-  id              String   @id @default(cuid())
-  userId          String
-  originalFileUrl String
-  fileName        String?
-  summaryText     String
-  extractedText   String
-  title           String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                String   @id @default(cuid())
+  userId            String
+  originalFileUrl   String
+  fileName          String?
+  summaryText       String
+  extractedText     String
+  title             String?
+  embeddingProvider String   @default("gemini")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -38,7 +39,8 @@ model DocumentChunk {
   id      String @id @default(cuid())
   content String
 
-  embedding Unsupported("vector(768)")?
+  embedding_ollama Unsupported("vector(768)")? 
+  embedding_gemini Unsupported("vector(3072)")? 
 
   pdfSummaryId String
   pdfSummary   PdfSummary @relation(fields: [pdfSummaryId], references: [id], onDelete: Cascade)

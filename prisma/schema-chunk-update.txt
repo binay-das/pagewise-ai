@@ -1,0 +1,12 @@
+model DocumentChunk {
+  id      String @id @default(cuid())
+  content String
+
+  embedding_ollama Unsupported("vector(768)")?  
+  embedding_gemini Unsupported("vector(3072)")? 
+
+  pdfSummaryId String
+  pdfSummary   PdfSummary @relation(fields: [pdfSummaryId], references: [id], onDelete: Cascade)
+
+  @@index([pdfSummaryId])
+}
