@@ -7,6 +7,8 @@ import { GoogleGenerativeAIEmbeddings } from '@langchain/google-genai';
 
 export class GeminiProvider implements AIProvider {
     readonly name = 'gemini';
+    readonly dimensions = 3072;
+    readonly vectorColumnName = 'embedding_gemini';
     private readonly google: ReturnType<typeof createGoogleGenerativeAI>;
     private readonly embeddings: GoogleGenerativeAIEmbeddings;
 
