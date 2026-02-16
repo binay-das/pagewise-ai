@@ -1,14 +1,12 @@
 "use server";
 
 import { CoreMessage } from "ai";
-import { getAIProvider } from "@/lib/ai";
+import { getProviderByName } from "@/lib/ai";
 import { PrismaVectorStore } from "@langchain/community/vectorstores/prisma";
 import { Prisma } from "@prisma/client";
 import type { DocumentChunk as PrismaDocumentChunk } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { AI_CONFIG } from "@/lib/config";
-
-const aiProvider = getAIProvider();
 
 export async function askQuestionAction(
   messages: CoreMessage[],
@@ -17,18 +15,16 @@ export async function askQuestionAction(
   const lastUserMessage = messages[messages.length - 1];
   const question = lastUserMessage.content as string;
 
-  /*
-  // Old Supabase Logic
-  const vectorStore = new SupabaseVectorStore(embeddings, {
-    client: supabaseClient,
-    tableName: "DocumentChunk",
-    queryName: "match_documents",
+  const document = await prisma.pdfSummary.findUnique({
+    where: { id: documentId },
+    select: { embeddingProvider: true, title: true },
   });
 
-  const relevantDocs = await vectorStore.similaritySearch(question, 4, {
-    pdfSummaryId: documentId,
-  });
-  */
+  if (!document) {
+    throw new Error("Document not found");
+  }
+
+  const aiProvider = getProviderByName(document.embeddingProvider);
 
   const vectorStore = PrismaVectorStore.withModel<PrismaDocumentChunk>(prisma).create(
     aiProvider,
@@ -43,9 +39,26 @@ export async function askQuestionAction(
     }
   );
 
-  const relevantDocs = await vectorStore.similaritySearch(question, AI_CONFIG.SIMILARITY_SEARCH_LIMIT, {
-    pdfSummaryId: { equals: documentId }
-  });
+  let relevantDocs;
+  try {
+    relevantDocs = await vectorStore.similaritySearch(question, AI_CONFIG.SIMILARITY_SEARCH_LIMIT, {
+      pdfSummaryId: { equals: documentId }
+    });
+  } catch (error: any) {
+    if (error.message?.includes('dimensions') || error.code === 'P2010') {
+      const expectedDims = document.embeddingProvider === 'gemini' ? 3072 : 768;
+      throw new Error(
+        `AI Provider Incompatibility Error\n\n` +
+        `This document "${document.title || 'Untitled'}" was embedded using ${document.embeddingProvider.toUpperCase()}, ` +
+        `which uses ${expectedDims}-dimensional vectors.\n\n` +
+        `The current AI provider configuration might not match. ` +
+        `Please ensure AI_PROVIDER in your .env matches the provider used to embed this document.\n\n` +
+        `Quick fix: Set AI_PROVIDER=${document.embeddingProvider} in your .env file and restart the server.`
+      );
+    }
+
+    throw error;
+  }
 
   const context = relevantDocs.map((doc) => doc.pageContent).join("\n\n---\n\n");
 
