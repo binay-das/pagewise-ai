@@ -5,7 +5,6 @@ import { applicationConfig } from '@/lib/config';
 
 export type { AIProvider, ChatMessage } from './provider';
 
-// singleton instance
 let providerInstance: AIProvider | null = null;
 
 
@@ -15,21 +14,23 @@ export const getAIProvider = (): AIProvider => {
     }
 
     const provider = applicationConfig.ai.provider.toLowerCase();
+    providerInstance = getProviderByName(provider);
+    return providerInstance;
+};
+
+export const getProviderByName = (name: string): AIProvider => {
+    const provider = name.toLowerCase();
 
     switch (provider) {
         case 'ollama':
-            providerInstance = new OllamaProvider();
-            break;
+            return new OllamaProvider();
         case 'gemini':
-            providerInstance = new GeminiProvider();
-            break;
+            return new GeminiProvider();
         default:
             throw new Error(
-                `Unknown AI provider: ${provider}. Supported providers: ollama, gemini`
+                `Unknown AI provider: ${provider}`
             );
     }
-
-    return providerInstance;
 };
 
 
