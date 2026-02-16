@@ -1,8 +1,6 @@
 "use server";
 
 import { authOptions } from "@/lib/auth";
-// import { generateSummaryFromGemini } from "@/lib/gemini";
-// import { generateSafeSummary, generateSummaryFromOllama } from "@/lib/ollama";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { extractTextFromPdf } from "@/lib/langchain";
@@ -10,6 +8,7 @@ import { readPdfFromStorage } from "@/lib/object-storage.read";
 import { processAndEmbedDocument } from "@/app/actions/embed-actions";
 import { logger, maskId } from "@/lib/logger";
 import { Result } from "@/lib/types/result";
+import { getAIProvider } from "@/lib/ai";
 
 
 type SummaryData = {
@@ -84,6 +83,8 @@ export async function storePdfSummaryAction({
             };
         }
 
+        const currentProvider = getAIProvider();
+
         const savedPdfSummary = await prisma.pdfSummary.create({
             data: {
                 userId: user.id,
@@ -91,7 +92,8 @@ export async function storePdfSummaryAction({
                 summaryText: summary ?? "",
                 title,
                 fileName,
-                extractedText
+                extractedText,
+                embeddingProvider: currentProvider.name, 
             },
         });
 
