@@ -6,6 +6,8 @@ export type ChatMessage = {
 
 export interface AIProvider {
     readonly name: string;
+    readonly dimensions: number;
+    readonly vectorColumnName: string;
 
     embedDocuments(texts: string[]): Promise<number[][]>;
 
