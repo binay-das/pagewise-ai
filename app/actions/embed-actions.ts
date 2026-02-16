@@ -1,8 +1,7 @@
 "use server";
 
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-// import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
-import { OllamaEmbeddings } from "@/lib/ollama";
+import { getAIProvider } from "@/lib/ai";
 import { PrismaVectorStore } from "@langchain/community/vectorstores/prisma";
 import { Prisma } from "@prisma/client";
 import type { DocumentChunk as PrismaDocumentChunk } from "@prisma/client";
@@ -30,12 +29,7 @@ export async function processAndEmbedDocument(pdfSummaryId: string) {
       return { success: true, message: "No text to chunk." };
     }
 
-    // const embeddings = new GoogleGenerativeAIEmbeddings({
-    //   apiKey: process.env.GEMINI_API_KEY!,
-    //   modelName: "text-embedding-004",
-    // });
-
-    const embeddings = new OllamaEmbeddings();
+    const aiProvider = getAIProvider();
 
     // create rows without embeddings
     const created = await prisma.$transaction(
@@ -47,7 +41,7 @@ export async function processAndEmbedDocument(pdfSummaryId: string) {
     );
 
     const vectorStore = PrismaVectorStore.withModel<PrismaDocumentChunk>(prisma).create(
-      embeddings,
+      aiProvider,
       {
         prisma: Prisma,
         tableName: "DocumentChunk",

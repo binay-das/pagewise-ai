@@ -1,33 +1,14 @@
 "use server";
 
 import { CoreMessage } from "ai";
-// import { createGoogleGenerativeAI } from "@ai-sdk/google";
-// import { createClient } from "@supabase/supabase-js";
-// import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
-// import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
-import { streamOllamaChat, createOllamaStream, OllamaEmbeddings } from "@/lib/ollama";
+import { getAIProvider } from "@/lib/ai";
 import { PrismaVectorStore } from "@langchain/community/vectorstores/prisma";
 import { Prisma } from "@prisma/client";
 import type { DocumentChunk as PrismaDocumentChunk } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { AI_CONFIG } from "@/lib/config";
 
-
-// const google = createGoogleGenerativeAI({
-//   apiKey: process.env.GEMINI_API_KEY!,
-// });
-
-// const supabaseClient = createClient(
-//   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-//   process.env.SUPABASE_SERVICE_KEY!
-// );
-
-// const embeddings = new GoogleGenerativeAIEmbeddings({
-//   apiKey: process.env.GEMINI_API_KEY!,
-//   modelName: "text-embedding-004",
-// });
-
-const embeddings = new OllamaEmbeddings();
+const aiProvider = getAIProvider();
 
 export async function askQuestionAction(
   messages: CoreMessage[],
@@ -50,7 +31,7 @@ export async function askQuestionAction(
   */
 
   const vectorStore = PrismaVectorStore.withModel<PrismaDocumentChunk>(prisma).create(
-    embeddings,
+    aiProvider,
     {
       prisma: Prisma,
       tableName: "DocumentChunk",
@@ -68,16 +49,16 @@ export async function askQuestionAction(
 
   const context = relevantDocs.map((doc) => doc.pageContent).join("\n\n---\n\n");
 
-  const ollamaMessages = [
+  const chatMessages = [
     {
-      role: "system",
+      role: "system" as const,
       content:
         "You are a helpful AI assistant for the PageWise app. " +
         "Answer ONLY using the provided context. " +
         "If the answer is not found, say: 'I couldn't find an answer to that in the document.'"
     },
     {
-      role: "user",
+      role: "user" as const,
       content: `
       CONTEXT:
       ${context}
@@ -88,14 +69,11 @@ export async function askQuestionAction(
     }
   ];
 
-
-  const stream = await streamOllamaChat(ollamaMessages);
-  if (!stream) throw new Error("Failed to get stream from Ollama");
-
-  const customStream = await createOllamaStream(stream);
+  const stream = await aiProvider.streamChat(chatMessages);
+  if (!stream) throw new Error("Failed to get stream from AI provider");
 
   let fullResponse = "";
-  const reader = customStream.getReader();
+  const reader = stream.getReader();
   const encoder = new TextEncoder();
 
   const savableStream = new ReadableStream({
