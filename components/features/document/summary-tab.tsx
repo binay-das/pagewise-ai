@@ -9,7 +9,6 @@ import { MarkdownRenderer } from "@/components/shared";
 interface SummaryTabProps {
     documentId: string;
     initialSummary: string | null;
-    extractedText: string | null;
     summary: string;
     setSummary: (summary: string) => void;
     isGenerating: boolean;
@@ -19,7 +18,6 @@ interface SummaryTabProps {
 export function SummaryTab({
     documentId,
     initialSummary,
-    extractedText,
     summary,
     setSummary,
     isGenerating,
@@ -30,11 +28,6 @@ export function SummaryTab({
     const hasSummary = summary && summary.trim().length > 0;
 
     const generateSummary = async () => {
-        if (!extractedText || !extractedText.trim()) {
-            setError("No extracted text available to generate summary");
-            return;
-        }
-
         setIsGenerating(true);
         setError(null);
         setSummary("");

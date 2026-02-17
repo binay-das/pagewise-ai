@@ -70,7 +70,7 @@ export default function DocumentCard({ document }: { document: Document }) {
   const fileType = getFileTypeFromTitle(
     document.title || document.fileName || ""
   );
-  const wordCount = document.extractedText?.split(" ").length || 0;
+  const wordCount = document.wordCount || 0;
   const readingTime = Math.ceil(wordCount / 200);
 
   return (

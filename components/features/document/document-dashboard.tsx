@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { getDocumentExtractedText } from "@/app/actions/get-extracted-text";
 import { ChatInterface } from "@/components/features/chat";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -24,7 +25,6 @@ interface DocumentDashboardProps {
         title: string | null;
         originalFileUrl: string;
         summaryText: string | null;
-        extractedText: string | null;
         fileName: string | null;
     };
 }
@@ -42,6 +42,8 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
     const [messages, setMessages] = useState<Message[]>([]);
     const [isMessagesLoaded, setIsMessagesLoaded] = useState<boolean>(false);
     const [isChatLoading, setIsChatLoading] = useState<boolean>(false);
+    const [extractedText, setExtractedText] = useState<string | null>(null);
+    const [isLoadingText, setIsLoadingText] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchChatHistory = async () => {
@@ -62,6 +64,22 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
             fetchChatHistory();
         }
     }, [document.id, isMessagesLoaded]);
+
+    const loadExtractedText = async () => {
+        if (extractedText || isLoadingText) return;
+
+        setIsLoadingText(true);
+        try {
+            const result = await getDocumentExtractedText(document.id);
+            if (result.success && result.data) {
+                setExtractedText(result.data);
+            }
+        } catch (error) {
+            console.error("Error loading extracted text:", error);
+        } finally {
+            setIsLoadingText(false);
+        }
+    };
 
     return (
         <div className="flex flex-col w-full bg-background overflow-hidden" style={{ height: "calc(100vh - 65px)" }}>
@@ -178,7 +196,6 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
                             <SummaryTab
                                 documentId={document.id}
                                 initialSummary={document.summaryText}
-                                extractedText={document.extractedText}
                                 summary={summary}
                                 setSummary={setSummary}
                                 isGenerating={isGenerating}
@@ -189,16 +206,23 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
                         <TabsContent
                             value="extracted"
                             className="flex-1 p-0 m-0 data-[state=inactive]:hidden overflow-hidden"
+                            onFocus={loadExtractedText}
                         >
                             <div className="h-full flex flex-col overflow-y-auto">
                                 <div className="p-6">
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="font-semibold text-base">Extracted Text</h3>
-                                        <CopyButton text={document.extractedText || ""} className="p-2" />
+                                        {extractedText && <CopyButton text={extractedText} className="p-2" />}
                                     </div>
-                                    <div className="bg-muted/40 rounded-xl p-5 border font-mono text-xs leading-relaxed whitespace-pre-wrap">
-                                        {document.extractedText}
-                                    </div>
+                                    {isLoadingText ? (
+                                        <div className="bg-muted/40 rounded-xl p-5 border flex items-center justify-center min-h-[200px]">
+                                            <p className="text-sm text-muted-foreground">Loading extracted text...</p>
+                                        </div>
+                                    ) : (
+                                        <div className="bg-muted/40 rounded-xl p-5 border font-mono text-xs leading-relaxed whitespace-pre-wrap">
+                                            {extractedText || "No extracted text available"}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </TabsContent>
