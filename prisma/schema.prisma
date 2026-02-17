@@ -23,7 +23,8 @@ model PdfSummary {
   originalFileUrl   String
   fileName          String?
   summaryText       String
-  extractedText     String
+  extractedTextKey  String?
+  wordCount         Int      @default(0)
   title             String?
   embeddingProvider String   @default("gemini")
   createdAt         DateTime @default(now())
@@ -39,8 +40,8 @@ model DocumentChunk {
   id      String @id @default(cuid())
   content String
 
-  embedding_ollama Unsupported("vector(768)")? 
-  embedding_gemini Unsupported("vector(3072)")? 
+  embedding_ollama Unsupported("vector(768)")?
+  embedding_gemini Unsupported("vector(3072)")?
 
   pdfSummaryId String
   pdfSummary   PdfSummary @relation(fields: [pdfSummaryId], references: [id], onDelete: Cascade)
