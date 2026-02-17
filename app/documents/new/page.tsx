@@ -63,6 +63,7 @@ export default function NewDocument() {
         fileUrl: url,
         summary: summaryRes.data.summary,
         extractedText: summaryRes.data.pdfText,
+        metadata: summaryRes.data.metadata,
         title: file.name.replace(/\.pdf$/i, ""),
         fileName: file.name,
       });

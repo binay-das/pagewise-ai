@@ -3,7 +3,7 @@
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
-import { extractTextFromPdf } from "@/lib/langchain";
+import { extractTextFromPdf, PdfMetadata } from "@/lib/langchain";
 import { readPdfFromStorage } from "@/lib/object-storage.read";
 import { storeExtractedText } from "@/lib/object-storage-text";
 import { processAndEmbedDocument } from "@/app/actions/embed-actions";
@@ -15,6 +15,7 @@ import { getAIProvider } from "@/lib/ai";
 type SummaryData = {
     summary: string | null;
     pdfText: string;
+    metadata: PdfMetadata;
 };
 
 export async function generateSummary(fileKey: string): Promise<Result<SummaryData>> {
@@ -27,8 +28,8 @@ export async function generateSummary(fileKey: string): Promise<Result<SummaryDa
 
     try {
         const pdfBuffer = await readPdfFromStorage(fileKey);
-        const pdfText = await extractTextFromPdf(pdfBuffer);
-        logger.info({ textLength: pdfText.length }, "PDF text extracted successfully");
+        const extraction = await extractTextFromPdf(pdfBuffer);
+        logger.info({ textLength: extraction.text.length }, "PDF text extracted successfully");
 
         // Optimization: Skip blocking summary generation during upload.
         // Summary can be generated on-demand later.
@@ -36,7 +37,11 @@ export async function generateSummary(fileKey: string): Promise<Result<SummaryDa
 
         return {
             success: true,
-            data: { summary, pdfText },
+            data: {
+                summary,
+                pdfText: extraction.text,
+                metadata: extraction.metadata,
+            },
         };
 
     } catch (error) {
@@ -67,13 +72,15 @@ export async function storePdfSummaryAction({
     summary,
     title,
     fileName,
-    extractedText
+    extractedText,
+    metadata,
 }: {
     fileUrl: string;
     summary: string | null;
     title: string;
     fileName: string;
     extractedText: string;
+    metadata?: PdfMetadata;
 }): Promise<Result<PdfSummary>> {
     try {
         const session = await getServerSession(authOptions);
@@ -94,18 +101,19 @@ export async function storePdfSummaryAction({
             data: {
                 userId: user.id,
                 originalFileUrl: fileUrl,
-                summaryText: summary ?? "",
-                title,
                 fileName,
+                summaryText: summary || "",
+                title: metadata?.title || title,
+                author: metadata?.author,
+                creationDate: metadata?.creationDate,
+                keywords: metadata?.keywords,
                 wordCount,
                 embeddingProvider: currentProvider.name,
             },
         });
 
-        // Store extracted text in MinIO
         const textKey = await storeExtractedText(savedPdfSummary.id, extractedText);
 
-        // Update with text key
         await prisma.pdfSummary.update({
             where: { id: savedPdfSummary.id },
             data: { extractedTextKey: textKey },
