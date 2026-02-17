@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getExtractedText } from "@/lib/object-storage-text";
 import { logger, maskId } from "@/lib/logger";
 import { streamOllamaChat } from "@/lib/ollama";
 import { NextRequest, NextResponse } from "next/server";
@@ -43,7 +44,15 @@ export async function POST(
             );
         }
 
-        const extractedText = document.extractedText;
+        if (!document.extractedTextKey) {
+            return NextResponse.json(
+                { error: "No extracted text available" },
+                { status: 400 }
+            );
+        }
+
+        // Retrieve extracted text from MinIO
+        const extractedText = await getExtractedText(document.extractedTextKey);
 
         if (!extractedText || !extractedText.trim()) {
             return NextResponse.json(
