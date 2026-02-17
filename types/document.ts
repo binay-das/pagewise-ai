@@ -6,6 +6,9 @@ export interface Document {
     summaryText?: string;
     extractedTextKey?: string;
     wordCount?: number;
+    author?: string;
+    creationDate?: Date;
+    keywords?: string;
     createdAt: Date;
     updatedAt: Date;
     embeddingProvider: string;

@@ -1,11 +1,41 @@
-import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+import pdf from "pdf-parse";
 
-export async function extractTextFromPdf(pdfBuffer: Buffer) {
-    const blob = new Blob([pdfBuffer as any]);
+export type PdfMetadata = {
+    title?: string;
+    author?: string;
+    creationDate?: Date;
+    keywords?: string;
+};
 
-    const loader = new PDFLoader(blob);
+export type PdfExtraction = {
+    text: string;
+    metadata: PdfMetadata;
+};
 
-    const docs = await loader.load();
+export async function extractTextFromPdf(pdfBuffer: Buffer): Promise<PdfExtraction> {
+    const data = await pdf(pdfBuffer);
 
-    return docs.map((doc) => doc.pageContent).join("\n");
+    return {
+        text: data.text,
+        metadata: {
+            title: data.info?.Title || undefined,
+            author: data.info?.Author || undefined,
+            creationDate: data.info?.CreationDate
+                ? parsePdfDate(data.info.CreationDate)
+                : undefined,
+            keywords: data.info?.Keywords || undefined,
+        },
+    };
+}
+
+function parsePdfDate(pdfDate: string): Date | undefined {
+    try {
+        const match = pdfDate.match(/D:(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/);
+        if (!match) return undefined;
+
+        const [, year, month, day, hour, minute, second] = match;
+        return new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}Z`);
+    } catch {
+        return undefined;
+    }
 }
