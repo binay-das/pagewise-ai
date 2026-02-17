@@ -24,6 +24,17 @@ export async function GET(req: NextRequest) {
             where: {
                 userId,
             },
+            select: {
+                id: true,
+                title: true,
+                fileName: true,
+                summaryText: true,
+                originalFileUrl: true,
+                wordCount: true,
+                embeddingProvider: true,
+                createdAt: true,
+                updatedAt: true,
+            },
             orderBy: {
                 createdAt: "desc",
             },
