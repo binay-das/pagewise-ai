@@ -4,7 +4,8 @@ export interface Document {
     fileName: string;
     fileUrl: string;
     summaryText?: string;
-    extractedText?: string;
+    extractedTextKey?: string;
+    wordCount?: number;
     createdAt: Date;
     updatedAt: Date;
     embeddingProvider: string;
