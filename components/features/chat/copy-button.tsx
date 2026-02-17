@@ -29,7 +29,7 @@ export const CopyButton = ({ text, className = "" }: CopyButtonProps) => {
     return (
         <Button
             onClick={handleCopy}
-            className={`p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${className}`}
+            className={`p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer ${className}`}
             aria-label="Copy to clipboard"
             type="button"
         >

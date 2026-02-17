@@ -81,6 +81,12 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
         }
     };
 
+    const handleTabChange = (value: string) => {
+        if (value === "extracted") {
+            loadExtractedText();
+        }
+    };
+
     return (
         <div className="flex flex-col w-full bg-background overflow-hidden" style={{ height: "calc(100vh - 65px)" }}>
             <div className="flex items-center justify-between px-6 py-3 border-b bg-card/50 backdrop-blur-sm">
@@ -153,7 +159,7 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
                         }
                     `}
                 >
-                    <Tabs defaultValue="chat" className="flex-1 flex flex-col h-full overflow-hidden">
+                    <Tabs defaultValue="chat" onValueChange={handleTabChange} className="flex-1 flex flex-col h-full overflow-hidden">
                         <TabsList className="grid w-full grid-cols-3 rounded-none bg-muted/30 p-1 h-12 flex-shrink-0 border-b">
                             <TabsTrigger
                                 value="chat"
@@ -206,7 +212,6 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
                         <TabsContent
                             value="extracted"
                             className="flex-1 p-0 m-0 data-[state=inactive]:hidden overflow-hidden"
-                            onFocus={loadExtractedText}
                         >
                             <div className="h-full flex flex-col overflow-y-auto">
                                 <div className="p-6">
