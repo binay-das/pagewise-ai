@@ -13,6 +13,7 @@ import {
   Clock,
   ExternalLink,
   Layers,
+  User,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Document } from "@/types/document";
@@ -118,6 +119,24 @@ export default function DocumentCard({ document }: { document: Document }) {
                     <Clock className="h-3 w-3" />
                     <span>{readingTime} min read</span>
                   </div>
+                </div>
+              )}
+
+              {/* Metadata section */}
+              {(document.author || document.creationDate) && (
+                <div className="flex flex-wrap items-center gap-2 text-[10px] text-neutral-400 dark:text-neutral-500">
+                  {document.author && (
+                    <div className="flex items-center gap-1">
+                      <User className="h-3 w-3" />
+                      <span className="truncate max-w-[120px]">{document.author}</span>
+                    </div>
+                  )}
+                  {document.creationDate && (
+                    <div className="flex items-center gap-1">
+                      <Calendar className="h-3 w-3" />
+                      <span>{new Date(document.creationDate).toLocaleDateString()}</span>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
