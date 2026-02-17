@@ -6,6 +6,7 @@ import { PrismaVectorStore } from "@langchain/community/vectorstores/prisma";
 import { Prisma } from "@prisma/client";
 import type { DocumentChunk as PrismaDocumentChunk } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { getExtractedText } from "@/lib/object-storage-text";
 import { logger } from "@/lib/logger";
 import { AI_CONFIG } from "@/lib/config";
 
@@ -13,9 +14,13 @@ export async function processAndEmbedDocument(pdfSummaryId: string) {
   try {
     const pdfSummary = await prisma.pdfSummary.findUnique({
       where: { id: pdfSummaryId },
-      select: { extractedText: true },
+      select: { extractedTextKey: true },
     });
     if (!pdfSummary) throw new Error("PDF summary not found.");
+    if (!pdfSummary.extractedTextKey) throw new Error("No extracted text key found.");
+
+    // Retrieve extracted text from MinIO
+    const extractedText = await getExtractedText(pdfSummary.extractedTextKey);
 
     await prisma.documentChunk.deleteMany({ where: { pdfSummaryId } });
 
@@ -24,7 +29,7 @@ export async function processAndEmbedDocument(pdfSummaryId: string) {
       chunkOverlap: 100,
     });
 
-    const textChunks = await splitter.splitText(pdfSummary.extractedText || "");
+    const textChunks = await splitter.splitText(extractedText || "");
     if (textChunks.length === 0) {
       return { success: true, message: "No text to chunk." };
     }

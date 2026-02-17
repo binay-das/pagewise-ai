@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { extractTextFromPdf } from "@/lib/langchain";
 import { readPdfFromStorage } from "@/lib/object-storage.read";
+import { storeExtractedText } from "@/lib/object-storage-text";
 import { processAndEmbedDocument } from "@/app/actions/embed-actions";
 import { logger, maskId } from "@/lib/logger";
 import { Result } from "@/lib/types/result";
@@ -55,7 +56,8 @@ type PdfSummary = {
     summaryText: string;
     title: string | null;
     fileName: string | null;
-    extractedText: string;
+    extractedTextKey: string | null;
+    wordCount: number;
     createdAt: Date;
     updatedAt: Date;
 };
@@ -85,6 +87,9 @@ export async function storePdfSummaryAction({
 
         const currentProvider = getAIProvider();
 
+        // Calculate word count
+        const wordCount = extractedText.trim().split(/\s+/).length;
+
         const savedPdfSummary = await prisma.pdfSummary.create({
             data: {
                 userId: user.id,
@@ -92,9 +97,18 @@ export async function storePdfSummaryAction({
                 summaryText: summary ?? "",
                 title,
                 fileName,
-                extractedText,
-                embeddingProvider: currentProvider.name, 
+                wordCount,
+                embeddingProvider: currentProvider.name,
             },
+        });
+
+        // Store extracted text in MinIO
+        const textKey = await storeExtractedText(savedPdfSummary.id, extractedText);
+
+        // Update with text key
+        await prisma.pdfSummary.update({
+            where: { id: savedPdfSummary.id },
+            data: { extractedTextKey: textKey },
         });
 
         await processAndEmbedDocument(savedPdfSummary.id);
