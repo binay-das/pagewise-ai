@@ -2,9 +2,9 @@ import { applicationConfig } from "@/lib/config";
 import { s3 } from "@/lib/object-storage.client";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 
-async function streamToBuffer(stream: any): Promise<Buffer> {
+async function streamToBuffer(stream: unknown): Promise<Buffer> {
     const chunks: Buffer[] = [];
-    for await (const chunk of stream) {
+    for await (const chunk of stream as AsyncIterable<Uint8Array>) {
         chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
     }
     return Buffer.concat(chunks);

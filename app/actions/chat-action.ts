@@ -44,8 +44,9 @@ export async function askQuestionAction(
     relevantDocs = await vectorStore.similaritySearch(question, AI_CONFIG.SIMILARITY_SEARCH_LIMIT, {
       pdfSummaryId: { equals: documentId }
     });
-  } catch (error: any) {
-    if (error.message?.includes('dimensions') || error.code === 'P2010') {
+  } catch (error: unknown) {
+    const err = error as { message?: string; code?: string };
+    if (err.message?.includes('dimensions') || err.code === 'P2010') {
       const expectedDims = document.embeddingProvider === 'gemini' ? 3072 : 768;
       throw new Error(
         `AI Provider Incompatibility Error\n\n` +

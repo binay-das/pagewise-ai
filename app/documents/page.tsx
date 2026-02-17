@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, FileText } from "lucide-react";
 import { DocumentCard } from "@/components/features/document";
+import { Document } from "@/types/document";
 
 const container = {
   hidden: { opacity: 0 },
@@ -24,7 +25,7 @@ const item = {
 };
 
 export default function Dashboard() {
-  const [documents, setDocuments] = useState<any[]>([]);
+  const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -148,7 +149,7 @@ export default function Dashboard() {
             animate="show"
             className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
           >
-            {documents.map((d: any) => (
+            {documents.map((d: Document) => (
               <motion.div key={d.id} variants={item}>
                 <DocumentCard document={d} />
               </motion.div>

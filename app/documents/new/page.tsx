@@ -42,7 +42,7 @@ export default function NewDocument() {
 
     setIsLoading(true);
 
-    let res: any = null;
+    let res: { key: string; url: string } | null = null;
 
     try {
       toast.info("Uploading...");
@@ -80,7 +80,7 @@ export default function NewDocument() {
     } catch (error) {
       logger.error({ error }, "Upload error");
 
-      if (res && res.fileKey) {
+      if (res && res.key) {
         try {
           // await edgestore.publicFiles.delete({ url: uploadedUrl });
           logger.info("File deleted from storage due to failure");

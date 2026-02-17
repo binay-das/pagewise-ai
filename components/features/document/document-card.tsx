@@ -15,6 +15,7 @@ import {
   Layers,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Document } from "@/types/document";
 
 const truncateText = (text: string, length: number) => {
   if (text.length <= length) return text;
@@ -64,7 +65,7 @@ const getRelativeTime = (date: Date) => {
   return `${Math.ceil(diffDays / 365)} years ago`;
 };
 
-export default function DocumentCard({ document }: { document: any }) {
+export default function DocumentCard({ document }: { document: Document }) {
   const createdDate = new Date(document.createdAt);
   const fileType = getFileTypeFromTitle(
     document.title || document.fileName || ""
