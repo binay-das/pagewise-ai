@@ -45,7 +45,7 @@ export async function processAndEmbedDocument(pdfSummaryId: string) {
       {
         prisma: Prisma,
         tableName: "DocumentChunk",
-        vectorColumnName: "embedding",
+        vectorColumnName: aiProvider.vectorColumnName,
         columns: {
           id: PrismaVectorStore.IdColumn,
           content: PrismaVectorStore.ContentColumn,
