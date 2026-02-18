@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { logger, maskId } from "@/lib/logger";
 import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
     let userId: string | null = null;
@@ -19,6 +20,17 @@ export async function GET(req: NextRequest) {
         }
 
         userId = user.id;
+
+        const rateLimit = checkRateLimit(`documents:${userId}`, 60, 60_000);
+        if (!rateLimit.allowed) {
+            return NextResponse.json(
+                { error: "Too many requests" },
+                {
+                    status: 429,
+                    headers: { "Retry-After": String(Math.ceil(rateLimit.retryAfterMs / 1000)) },
+                }
+            );
+        }
 
         const documents = await prisma.pdfSummary.findMany({
             where: {
