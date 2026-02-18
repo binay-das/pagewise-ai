@@ -4,6 +4,9 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { logger, maskId } from "@/lib/logger";
 
+const DEFAULT_LIMIT = 50;
+const MAX_LIMIT = 100;
+
 export async function GET(
     req: NextRequest,
     { params }: { params: Promise<{ documentId: string }> }
@@ -11,10 +14,7 @@ export async function GET(
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
-        return NextResponse.json(
-            { error: "Unauthorized" },
-            { status: 401 }
-        );
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { documentId } = await params;
@@ -25,16 +25,20 @@ export async function GET(
     });
 
     if (!document) {
-            return NextResponse.json(
-                { error: "Document not found" },
-                { status: 404 }
-            );
+        return NextResponse.json({ error: "Document not found" }, { status: 404 });
     }
+
+    const { searchParams } = req.nextUrl;
+    const cursor = searchParams.get("cursor") ?? undefined;
+    const limitParam = parseInt(searchParams.get("limit") ?? String(DEFAULT_LIMIT), 10);
+    const limit = Math.min(isNaN(limitParam) ? DEFAULT_LIMIT : limitParam, MAX_LIMIT);
 
     try {
         const messages = await prisma.message.findMany({
             where: { pdfSummaryId: documentId },
             orderBy: { createdAt: "asc" },
+            take: limit + 1,
+            ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
             select: {
                 id: true,
                 role: true,
@@ -43,11 +47,18 @@ export async function GET(
             },
         });
 
-        return NextResponse.json({ messages, total: messages.length });
+        const hasMore = messages.length > limit;
+        const page = hasMore ? messages.slice(0, limit) : messages;
+        const nextCursor = hasMore ? page[page.length - 1].id : null;
+
+        return NextResponse.json({
+            messages: page,
+            nextCursor,
+            hasMore,
+            limit,
+        });
     } catch (error) {
         logger.error({ error, documentId: maskId(documentId) }, "Error fetching messages");
-        return new Response(JSON.stringify({ error: "Failed to fetch messages" }), {
-            status: 500
-        });
+        return NextResponse.json({ error: "Failed to fetch messages" }, { status: 500 });
     }
 }
