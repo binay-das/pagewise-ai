@@ -1,11 +1,11 @@
 import { CoreMessage } from "ai";
-import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
 import { NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import { logger, maskId } from "@/lib/logger";
 import { askQuestionAction } from "@/app/actions/chat-action";
 import { chatRequestSchema, formatValidationError } from "@/lib/validation";
+import { enqueueMessage } from "@/lib/message-queue";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -50,17 +50,15 @@ export async function POST(req: NextRequest) {
   const lastUserMessage = messages[messages.length - 1];
 
   try {
-    const savedUserMessage = await prisma.message.create({
-      data: {
-        role: lastUserMessage.role,
-        content: lastUserMessage.content,
-        pdfSummaryId: documentId,
-      },
+    enqueueMessage({
+      role: lastUserMessage.role,
+      content: lastUserMessage.content as string,
+      pdfSummaryId: documentId,
     });
 
     logger.info(
-      { userId: maskId(session.user.id), documentId, messageId: savedUserMessage.id },
-      "Chat message saved successfully"
+      { userId: maskId(session.user.id), documentId },
+      "Chat message queued for save"
     );
 
     return askQuestionAction(

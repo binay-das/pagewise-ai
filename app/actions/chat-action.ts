@@ -7,6 +7,7 @@ import { Prisma } from "@prisma/client";
 import type { DocumentChunk as PrismaDocumentChunk } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { AI_CONFIG } from "@/lib/config";
+import { enqueueMessage } from "@/lib/message-queue";
 
 export async function askQuestionAction(
   messages: CoreMessage[],
@@ -96,12 +97,10 @@ export async function askQuestionAction(
         while (true) {
           const { done, value } = await reader.read();
           if (done) {
-            await prisma.message.create({
-              data: {
-                role: "assistant",
-                content: fullResponse,
-                pdfSummaryId: documentId,
-              },
+            enqueueMessage({
+              role: "assistant",
+              content: fullResponse,
+              pdfSummaryId: documentId,
             });
             controller.close();
             break;
