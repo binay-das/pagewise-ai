@@ -19,21 +19,19 @@ export async function GET(
 
     const { documentId } = await params;
 
-    try {
-        const document = await prisma.pdfSummary.findFirst({
-            where: {
-                id: documentId,
-                userId: session.user.id,
-            },
-        });
+    const document = await prisma.pdfSummary.findFirst({
+        where: { id: documentId, userId: session.user.id },
+        select: { id: true },
+    });
 
-        if (!document) {
+    if (!document) {
             return NextResponse.json(
                 { error: "Document not found" },
                 { status: 404 }
             );
-        }
+    }
 
+    try {
         const messages = await prisma.message.findMany({
             where: { pdfSummaryId: documentId },
             orderBy: { createdAt: "asc" },
@@ -45,7 +43,7 @@ export async function GET(
             },
         });
 
-        return NextResponse.json({ messages });
+        return NextResponse.json({ messages, total: messages.length });
     } catch (error) {
         logger.error({ error, documentId: maskId(documentId) }, "Error fetching messages");
         return new Response(JSON.stringify({ error: "Failed to fetch messages" }), {
