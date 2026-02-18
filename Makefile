@@ -1,7 +1,6 @@
 
 .PHONY: dev prod start down logs pull-models clean
 
-
 dev:
 	docker compose up -d
 	@echo ""
