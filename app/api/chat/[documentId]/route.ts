@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { logger, maskId } from "@/lib/logger";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const DEFAULT_LIMIT = 50;
 const MAX_LIMIT = 100;
@@ -26,6 +27,17 @@ export async function GET(
 
     if (!document) {
         return NextResponse.json({ error: "Document not found" }, { status: 404 });
+    }
+
+    const rateLimit = checkRateLimit(`chat-fetch:${session.user.id}`, 60, 60_000);
+    if (!rateLimit.allowed) {
+        return NextResponse.json(
+            { error: "Too many requests" },
+            {
+                status: 429,
+                headers: { "Retry-After": String(Math.ceil(rateLimit.retryAfterMs / 1000)) },
+            }
+        );
     }
 
     const { searchParams } = req.nextUrl;
