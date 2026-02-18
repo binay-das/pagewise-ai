@@ -5,6 +5,7 @@ import { getExtractedText } from "@/lib/object-storage-text";
 import { logger, maskId } from "@/lib/logger";
 import { streamOllamaChat } from "@/lib/ollama";
 import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(
     req: NextRequest,
@@ -18,6 +19,17 @@ export async function POST(
             return NextResponse.json(
                 { error: "Unauthorized" },
                 { status: 401 }
+            );
+        }
+
+        const rateLimit = checkRateLimit(`summary:${user.id}`, 5, 60_000);
+        if (!rateLimit.allowed) {
+            return NextResponse.json(
+                { error: "Too many requests" },
+                {
+                    status: 429,
+                    headers: { "Retry-After": String(Math.ceil(rateLimit.retryAfterMs / 1000)) },
+                }
             );
         }
 
