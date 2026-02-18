@@ -1,5 +1,5 @@
 
-.PHONY: dev prod down logs pull-models clean
+.PHONY: dev prod start down logs pull-models clean
 
 
 dev:
@@ -20,6 +20,10 @@ prod:
 	@echo "   App        : http://localhost:3000"
 	@echo "   MinIO UI   : http://localhost:9001"
 	@echo "   Ollama     : localhost:11434"
+
+start:
+	docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+	@echo "Containers started (no rebuild)."
 
 down:
 	docker compose -f docker-compose.yml -f docker-compose.prod.yml down
