@@ -37,6 +37,9 @@ model PdfSummary {
 
   chunks   DocumentChunk[]
   messages Message[]
+
+  @@index([userId])
+  @@index([userId, createdAt(sort: Desc)])
 }
 
 model DocumentChunk {
