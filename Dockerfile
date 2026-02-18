@@ -6,6 +6,7 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
+COPY prisma ./prisma
 RUN pnpm install --frozen-lockfile
 
 
@@ -18,7 +19,32 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+ARG DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
+ARG NEXTAUTH_SECRET=dummy
+ARG NEXTAUTH_URL=http://localhost:3000
+ARG S3_ENDPOINT=http://localhost:9000
+ARG MINIO_ROOT_USER=dummy
+ARG MINIO_ROOT_PASSWORD=dummy
+ARG S3_BUCKET=pdfs
+ARG AI_PROVIDER=ollama
+ARG LLM_BASE_URL=http://localhost:11434
+ARG LLM_TEXT_MODEL=llama3.2:3b
+ARG LLM_EMBEDDING_MODEL=nomic-embed-text:v1.5
+
+ENV DATABASE_URL=${DATABASE_URL} \
+    NEXTAUTH_SECRET=${NEXTAUTH_SECRET} \
+    NEXTAUTH_URL=${NEXTAUTH_URL} \
+    S3_ENDPOINT=${S3_ENDPOINT} \
+    MINIO_ROOT_USER=${MINIO_ROOT_USER} \
+    MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD} \
+    S3_BUCKET=${S3_BUCKET} \
+    AI_PROVIDER=${AI_PROVIDER} \
+    LLM_BASE_URL=${LLM_BASE_URL} \
+    LLM_TEXT_MODEL=${LLM_TEXT_MODEL} \
+    LLM_EMBEDDING_MODEL=${LLM_EMBEDDING_MODEL}
+
 RUN pnpm build
+
 
 FROM node:20-alpine AS runner
 
