@@ -1,11 +1,12 @@
 import { CoreMessage } from "ai";
 import { authOptions } from "@/lib/auth";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { logger, maskId } from "@/lib/logger";
 import { askQuestionAction } from "@/app/actions/chat-action";
 import { chatRequestSchema, formatValidationError } from "@/lib/validation";
 import { enqueueMessage } from "@/lib/message-queue";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -14,6 +15,17 @@ export async function POST(req: NextRequest) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const rateLimit = checkRateLimit(`chat:${session.user.id}`, 20, 60_000);
+  if (!rateLimit.allowed) {
+    return new NextResponse(JSON.stringify({ error: "Too many requests" }), {
+      status: 429,
+      headers: {
+        "Content-Type": "application/json",
+        "Retry-After": String(Math.ceil(rateLimit.retryAfterMs / 1000)),
+      },
     });
   }
 
