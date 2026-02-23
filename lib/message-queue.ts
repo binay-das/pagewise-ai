@@ -19,7 +19,7 @@ const BASE_DELAY_MS = 500;
 const queue: QueueEntry[] = [];
 let isProcessing = false;
 
-async function processQueue() {
+export async function processQueue() {
     if (isProcessing || queue.length === 0) return;
     isProcessing = true;
 
@@ -28,7 +28,7 @@ async function processQueue() {
         const now = Date.now();
 
         if (entry.nextRetryAt > now) {
-            await new Promise((r) => setTimeout(r, entry.nextRetryAt - now));
+            await new Promise<void>((r) => setTimeout(r, entry.nextRetryAt - now));
         }
 
         try {
@@ -64,4 +64,13 @@ async function processQueue() {
 export function enqueueMessage(payload: MessagePayload): void {
     queue.push({ payload, attempts: 0, nextRetryAt: 0 });
     setImmediate(processQueue);
+}
+
+export function getQueue(): QueueEntry[] {
+    return queue;
+}
+
+export function clearQueue(): void {
+    queue.length = 0;
+    isProcessing = false;
 }
