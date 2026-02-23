@@ -49,8 +49,9 @@ describe("message-queue", () => {
         enqueueMessage({ role: "assistant", content: "drop me", pdfSummaryId: "doc-3" });
 
         for (let i = 0; i < 5; i++) {
-            vi.advanceTimersByTime(60_000);
-            await processQueue();
+            const run = processQueue();
+            await vi.advanceTimersByTimeAsync(60_000);
+            await run;
         }
 
         expect(prisma.message.create).toHaveBeenCalledTimes(5);
