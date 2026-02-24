@@ -1,5 +1,5 @@
 
-.PHONY: dev prod start down logs pull-models clean
+.PHONY: dev prod start down logs pull-models clean test test-watch
 
 dev:
 	docker compose up -d
@@ -38,3 +38,9 @@ pull-models:
 clean:
 	docker compose -f docker-compose.yml -f docker-compose.prod.yml down -v --remove-orphans
 	@echo "All containers and volumes removed."
+
+test:
+	pnpm test
+
+test-watch:
+	pnpm test:watch
