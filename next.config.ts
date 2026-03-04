@@ -24,6 +24,16 @@ const nextConfig: NextConfig = {
   compress: true,
 
   poweredByHeader: false,
+
+  webpack: (config) => {
+    // pdfjs-dist tries to require 'canvas' in Node context
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      canvas: false,
+    };
+    return config;
+  },
 };
 
 export default nextConfig;
+
