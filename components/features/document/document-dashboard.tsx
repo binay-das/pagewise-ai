@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { SummaryTab } from "./summary-tab";
 import { CopyButton } from "@/components/features/chat";
 import { ErrorBoundary } from "@/components/shared";
+import PDFViewer from "@/components/features/document/PDFViewer";
 
 interface DocumentDashboardProps {
     document: {
@@ -143,11 +144,9 @@ export function DocumentDashboard({ document }: DocumentDashboardProps) {
                         border-b lg:border-b-0 lg:border-r
                     `}
                 >
-                    <iframe
-                        src={`/api/pdf?url=${encodeURIComponent(document.originalFileUrl)}#zoom=page-fit`}
-                        className="flex-1 w-full border-0"
-                        title={document.title ?? "PDF Document"}
-                    />
+                    <div className="h-full overflow-hidden">
+                        <PDFViewer src={`/api/pdf?url=${encodeURIComponent(document.originalFileUrl)}`} />
+                    </div>
                 </div>
 
                 <div
